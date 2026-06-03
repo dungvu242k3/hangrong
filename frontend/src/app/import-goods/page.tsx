@@ -127,7 +127,7 @@ export default function ImportGoodsPage() {
 
         {/* 2. ACTIVE IMPORTS VIEWPORT (CRITICAL ORDER BLOCK) */}
         {activeOrders.length > 0 && (
-          <div className="bg-slate-950 text-slate-200 border-4 border-double border-slate-700 rounded-2xl p-6 shadow-md relative overflow-hidden crt-overlay">
+          <div className="bg-slate-950 text-slate-200 border-4 border-double border-slate-700 rounded-2xl p-6 shadow-md relative overflow-hidden">
             <h3 className="font-retro text-xs text-[#EAB308] uppercase tracking-wider mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#EAB308] animate-spin" style={{ animationDuration: "3s" }} /> 
               Xe Hàng Đang Về ({activeOrders.length})

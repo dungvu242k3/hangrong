@@ -17,7 +17,7 @@ import { getProductVisual } from "@/shared/lib/productHelper";
 const StallSceneCanvas = dynamic(
   () => import("@/features/stall/components/StallSceneCanvas"),
   { ssr: false, loading: () => (
-    <div className="w-full aspect-video md:aspect-16/10 bg-slate-900 rounded-3xl animate-pulse flex items-center justify-center text-slate-400 font-semibold text-xs border-4 border-double border-slate-800">
+    <div className="w-full aspect-4/3 md:aspect-16/7 bg-slate-900 rounded-3xl animate-pulse flex items-center justify-center text-slate-400 font-semibold text-xs border-4 border-double border-slate-800">
       Đang tải động cơ vẽ 2D...
     </div>
   )}
@@ -54,7 +54,7 @@ export default function StallPage() {
   const { inventoryItems } = useInventory();
 
   // Player levels and currencies
-  const level = player?.level ?? 1;
+  const level = player?.stallLevel ?? 1;
   const coins = player?.coins ?? 0;
 
   // Selector sheets
@@ -189,7 +189,7 @@ export default function StallPage() {
   const activeInventory = inventoryItems.length > 0 ? inventoryItems : FALLBACK_INVENTORY;
 
   return (
-    <GameShell>
+    <GameShell fullWidth>
       <div className="space-y-6 relative select-none">
         
         {/* Floating Custom Toast Overlay Notification */}
@@ -230,10 +230,7 @@ export default function StallPage() {
           <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-1 select-none">
             <span className="flex items-center gap-1"><Info className="w-4 h-4 text-slate-500" /> Bấm trực tiếp vào các ô sạp tròn để bày hàng hoặc thu hoạch tiền xu.</span>
           </div>
-          <div className="retro-border-cta p-1.5 sm:p-3 bg-slate-950 rounded-3xl glow-cta relative overflow-hidden shadow-2xl">
-            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-slate-900 border border-slate-700/80 rounded-full px-4 py-0.5 text-[8px] font-retro text-[#EAB308] z-20 opacity-80 uppercase tracking-widest">
-              ★ TẠ HIỆN ARCADE ★
-            </div>
+          <div className="border-4 border-slate-800 bg-slate-950 rounded-2xl relative overflow-hidden shadow-2xl">
             <StallSceneCanvas />
           </div>
         </div>

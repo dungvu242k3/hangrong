@@ -3,14 +3,15 @@ package game
 import "time"
 
 type UserProfile struct {
-	ID        string `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email,omitempty"`
-	Coins     int64  `json:"coins"`
-	Gems      int64  `json:"gems"`
-	Level     int    `json:"level"`
-	CurrentXP int    `json:"currentXp"`
-	MaxXP     int    `json:"maxXp"`
+	ID         string `json:"id"`
+	Username   string `json:"username"`
+	Email      string `json:"email,omitempty"`
+	Coins      int64  `json:"coins"`
+	Gems       int64  `json:"gems"`
+	Level      int    `json:"level"`
+	CurrentXP  int    `json:"currentXp"`
+	MaxXP      int    `json:"maxXp"`
+	StallLevel int    `json:"stallLevel"`
 }
 
 type Product struct {

@@ -9,6 +9,7 @@ export interface UserProfile {
   level: number;
   currentXp: number;
   maxXp: number;
+  stallLevel: number;
 }
 
 export interface Product {

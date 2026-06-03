@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const StallSceneCanvas = dynamic(
   () => import("@/features/stall/components/StallSceneCanvas"),
   { ssr: false, loading: () => (
-    <div className="w-full aspect-video md:aspect-16/10 bg-slate-900 rounded-3xl animate-pulse flex items-center justify-center text-slate-400 font-semibold text-xs border-4 border-double border-slate-800">
+    <div className="w-full aspect-4/3 md:aspect-16/7 bg-slate-900 rounded-3xl animate-pulse flex items-center justify-center text-slate-400 font-semibold text-xs border-4 border-double border-slate-800">
       Đang chuẩn bị gánh hàng hàng xóm...
     </div>
   )}
@@ -193,7 +193,7 @@ export default function FriendsPage() {
   };
 
   return (
-    <GameShell>
+    <GameShell fullWidth>
       <div className="space-y-6 relative select-none">
         
         {/* Floating Custom Toast Overlay Notification */}
@@ -319,7 +319,7 @@ export default function FriendsPage() {
               </div>
               <div className="space-y-2">
                 <div className="h-4 w-64 bg-slate-900 rounded-md animate-pulse" />
-                <div className="w-full aspect-video md:aspect-16/10 bg-slate-900 border-4 border-double border-slate-800 rounded-2xl flex flex-col items-center justify-center gap-4">
+                <div className="w-full aspect-4/3 md:aspect-16/7 bg-slate-900 border-4 border-double border-slate-800 rounded-2xl flex flex-col items-center justify-center gap-4">
                   <div className="w-16 h-16 bg-slate-850 rounded-full animate-bounce" />
                   <div className="h-4 w-48 bg-slate-850 rounded-lg" />
                 </div>

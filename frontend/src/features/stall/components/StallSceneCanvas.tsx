@@ -52,10 +52,7 @@ export const StallSceneCanvas: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full aspect-video md:aspect-16/10 bg-[#F1F5F9] border-2 border-slate-900/15 rounded-3xl overflow-hidden shadow-retro-lg select-none">
-      {/* Dynamic CRT scanline overlay filter for retro arcade feel */}
-      <div className="absolute inset-0 pointer-events-none z-20 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.06)_50%),linear-gradient(90deg,rgba(255,0,0,0.015),rgba(0,255,0,0.01),rgba(0,0,255,0.015))] bg-size-[100%_4px,6px_100%]" />
-
+    <div className="relative w-full aspect-4/3 md:aspect-16/7 bg-slate-950 overflow-hidden select-none">
       {/* Loading overlay spinner */}
       {loading && (
         <div className="absolute inset-0 z-30 bg-slate-900/10 backdrop-blur-xs flex flex-col items-center justify-center gap-3 font-body text-slate-600 font-semibold text-sm">

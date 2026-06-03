@@ -12,9 +12,10 @@ import { usePlayer } from "@/shared/hooks/usePlayer";
 
 interface GameShellProps {
   children: React.ReactNode;
+  fullWidth?: boolean;
 }
 
-export const GameShell: React.FC<GameShellProps> = ({ children }) => {
+export const GameShell: React.FC<GameShellProps> = ({ children, fullWidth }) => {
   const pathname = usePathname();
   
   // Real dynamic player profile state
@@ -42,7 +43,7 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0F172A] flex flex-col font-body text-slate-100 relative selection:bg-cta selection:text-white pb-24 md:pb-6 md:pl-64 crt-overlay">
+    <div className="min-h-screen bg-[#0F172A] flex flex-col font-body text-slate-100 relative selection:bg-cta selection:text-white pb-24 md:pb-6 md:pl-64">
       {/* 1. TOP BAR (HUD) */}
       <header className="sticky top-0 z-30 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 py-2.5 px-4 md:px-8 flex flex-row items-center justify-between gap-3 shadow-md select-none">
         {/* Left Side: Avatar & Level */}
@@ -128,7 +129,7 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
       </aside>
 
       {/* 3. MAIN SCROLLABLE VIEWPORT CONTENT */}
-      <main className="grow p-4 md:p-8 max-w-5xl w-full mx-auto animate-fade-in">
+      <main className={`grow p-4 md:p-8 w-full animate-fade-in ${fullWidth ? "max-w-full" : "max-w-5xl mx-auto"}`}>
         {children}
       </main>
 
