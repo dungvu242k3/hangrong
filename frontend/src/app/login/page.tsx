@@ -147,14 +147,14 @@ export default function LoginPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-slate-900/90 border-2 border-slate-700 rounded-3xl p-8 shadow-2xl relative w-full max-w-md mx-auto"
+              className="bg-slate-900/90 border-2 border-slate-700 rounded-3xl p-5 sm:p-8 shadow-2xl relative w-full max-w-md mx-auto"
             >
               <h2 className="font-retro text-cta text-sm mb-6 uppercase tracking-wider">
                 Nhật Ký Hàng Rong
               </h2>
               
               {/* Typewriter scrolling viewport */}
-              <div className="min-h-[220px] font-pixel text-2xl text-slate-300 whitespace-pre-line leading-relaxed mb-8">
+              <div className="min-h-[220px] font-pixel text-lg sm:text-2xl text-slate-300 whitespace-pre-line leading-relaxed mb-8">
                 {typedText}
                 <span className="animate-pulse ml-1 text-cta font-bold">|</span>
               </div>
@@ -187,7 +187,7 @@ export default function LoginPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="bg-slate-900/90 border-2 border-slate-700 rounded-3xl p-8 shadow-2xl relative max-w-md w-full mx-auto"
+              className="bg-slate-900/90 border-2 border-slate-700 rounded-3xl p-5 sm:p-8 shadow-2xl relative max-w-md w-full mx-auto"
             >
               {/* Back to story */}
               <button
