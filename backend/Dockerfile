@@ -33,6 +33,7 @@ RUN go mod download
 
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /hangrong-api ./cmd/api
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /hangrong-migrate ./cmd/migrate
 
 # ── Stage 3: Production ────────────────────────────────────
 FROM alpine:3.21 AS production
@@ -42,6 +43,7 @@ RUN addgroup -g 1001 -S hangrong && \
 
 WORKDIR /app
 COPY --from=builder --chown=hangrong:hangrong /hangrong-api .
+COPY --from=builder --chown=hangrong:hangrong /hangrong-migrate .
 COPY --from=builder --chown=hangrong:hangrong /app/migrations ./migrations
 
 USER 1001
@@ -52,3 +54,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD wget -qO- http://localhost:8080/api/health || exit 1
 
 CMD ["./hangrong-api"]
+

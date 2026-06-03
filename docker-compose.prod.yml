@@ -1,0 +1,99 @@
+# ============================================================
+# Hang Rong — Docker Compose (Production)
+#
+# Services:
+#   - db        : PostgreSQL 16
+#   - backend   : Go API (Production static build)
+#   - frontend  : Next.js (Production optimized build)
+#   - proxy     : Caddy Reverse Proxy with automated SSL/HTTPS
+# ============================================================
+
+services:
+  # ── PostgreSQL Database ────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: hangrong-db-prod
+    restart: always
+    environment:
+      POSTGRES_DB: hangrong
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sat24042003 # Change this in production
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+      # Initialize migrations on first start
+      - ./backend/migrations:/docker-entrypoint-initdb.d/migrations:ro
+      - ./database/init-db.sh:/docker-entrypoint-initdb.d/99-init-db.sh:ro
+    networks:
+      - hangrong-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hangrong"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Go Backend API ──────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      target: production
+    container_name: hangrong-backend-prod
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HR_ADDR: ":8080"
+      HR_ALLOWED_ORIGIN: "https://yourdomain.com" # Change to your domain
+      HR_ALLOWED_ORIGINS: "https://yourdomain.com,https://www.yourdomain.com"
+      HR_MAX_BODY_BYTES: "1048576"
+      HR_ENABLE_HSTS: "true"
+      DATABASE_URL: "postgres://postgres:sat24042003@db:5432/hangrong?sslmode=disable" # Change password in production
+      JWT_SECRET: "your-super-secret-jwt-key-change-this-in-prod" # Change this
+    networks:
+      - hangrong-net
+
+  # ── Next.js Frontend ────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+    container_name: hangrong-frontend-prod
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_ENABLE_MOCK_FALLBACK: "false"
+      NEXT_PUBLIC_API_URL: "https://api.yourdomain.com" # Change to your API domain
+      NODE_ENV: production
+    networks:
+      - hangrong-net
+
+  # ── Caddy Reverse Proxy & SSL ───────────────────────────────
+  proxy:
+    image: caddy:2-alpine
+    container_name: hangrong-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - hangrong-net
+
+networks:
+  hangrong-net:
+    driver: bridge
+
+volumes:
+  postgres_prod_data:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local

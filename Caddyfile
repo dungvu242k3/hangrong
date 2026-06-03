@@ -1,0 +1,22 @@
+# ============================================================
+# Hang Rong — Caddy Routing Configuration (Production)
+#
+# Replace 'yourdomain.com' with your actual registered domain
+# and pointing to your VPS IP address.
+# ============================================================
+
+yourdomain.com, www.yourdomain.com {
+    # Reverse proxy requests to Next.js Frontend
+    reverse_proxy frontend:3000
+    
+    # Enable Gzip compression
+    encode gzip
+}
+
+api.yourdomain.com {
+    # Reverse proxy requests to Go Backend API
+    reverse_proxy backend:8080
+    
+    # Enable Gzip compression
+    encode gzip
+}
