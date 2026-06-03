@@ -1,4 +1,4 @@
-import { Container, Graphics, Text, TextStyle, Ticker } from "pixi.js";
+import { Container, Graphics, Text, TextStyle, Ticker, Application } from "pixi.js";
 import { gameEmitter } from "../events/gameEmitter";
 import { getProductVisual } from "../../shared/lib/productHelper";
 
@@ -27,7 +27,9 @@ interface CustomerNPC {
 
 export class StallScene {
   private parentContainer: Container;
+  private app: Application;
   private container: Container;
+  private resizeFn: () => void;
   
   // Game layers
   private bgLayer: Container;
@@ -55,8 +57,9 @@ export class StallScene {
   // Ticker listener reference
   private updateFn: () => void;
 
-  constructor(parentContainer: Container) {
+  constructor(parentContainer: Container, app: Application) {
     this.parentContainer = parentContainer;
+    this.app = app;
     this.container = new Container();
     this.parentContainer.addChild(this.container);
 
@@ -88,10 +91,35 @@ export class StallScene {
     // Spawn customers interval
     this.startCustomerSpawnTimer();
 
+    // Hook resize listener for fully responsive scaling
+    this.resizeFn = this.resize.bind(this);
+    window.addEventListener("resize", this.resizeFn);
+    this.resize();
+
     // Notify React that PixiJS game scene is loaded and ready to receive slots sync
     setTimeout(() => {
       gameEmitter.emit("game:ready");
     }, 50);
+  }
+
+  // 0. RESPONSIVE CONTAINER SCALING LOOP
+  private resize() {
+    if (!this.app || !this.app.screen) return;
+    const designWidth = 800;
+    const designHeight = 600;
+
+    const actualWidth = this.app.screen.width;
+    const actualHeight = this.app.screen.height;
+
+    const scaleX = actualWidth / designWidth;
+    const scaleY = actualHeight / designHeight;
+    const scale = Math.min(scaleX, scaleY);
+
+    this.container.scale.set(scale);
+
+    // Center game viewport inside canvas element
+    this.container.x = (actualWidth - designWidth * scale) / 2;
+    this.container.y = (actualHeight - designHeight * scale) / 2;
   }
 
   // 1. DRAW STREET SIDELINES
@@ -635,18 +663,27 @@ export class StallScene {
       
       const numSlots = data.slots.length;
       let xPositions = [220, 400, 580];
+      let yPositions = [380, 380, 380];
+
       if (numSlots === 4) {
         xPositions = [170, 320, 470, 620];
+        yPositions = [380, 380, 380, 380];
       } else if (numSlots === 5) {
         xPositions = [140, 270, 400, 530, 660];
+        yPositions = [380, 380, 380, 380, 380];
+      } else if (numSlots === 6) {
+        // Stack layout: 3 slots top, 3 slots bottom
+        xPositions = [220, 400, 580, 220, 400, 580];
+        yPositions = [345, 345, 345, 395, 395, 395];
       }
 
       this.slots = data.slots.map((newSlot, idx) => {
         const x = xPositions[idx] || (220 + idx * 100);
+        const y = yPositions[idx] || 380;
         return {
           id: newSlot.id || `slot${idx + 1}`,
           x: x,
-          y: 380,
+          y: y,
           productId: newSlot.productId || null,
           productName: newSlot.productName || null,
           productIcon: newSlot.productIcon || null,
@@ -741,6 +778,7 @@ export class StallScene {
 
   public destroy() {
     Ticker.shared.remove(this.updateFn);
+    window.removeEventListener("resize", this.resizeFn);
     gameEmitter.off("react:place_product");
     gameEmitter.off("react:sync_slots");
     gameEmitter.off("react:upgrade_stall");

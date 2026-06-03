@@ -42,40 +42,40 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0F172A] flex flex-col font-body text-slate-100 relative selection:bg-cta selection:text-white pb-[76px] md:pb-0 md:pl-64 crt-overlay">
+    <div className="min-h-screen bg-[#0F172A] flex flex-col font-body text-slate-100 relative selection:bg-cta selection:text-white pb-24 md:pb-6 md:pl-64 crt-overlay">
       {/* 1. TOP BAR (HUD) */}
-      <header className="sticky top-0 z-30 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 py-3.5 px-4 md:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3 shadow-md select-none">
+      <header className="sticky top-0 z-30 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 py-2.5 px-4 md:px-8 flex flex-row items-center justify-between gap-3 shadow-md select-none">
         {/* Left Side: Avatar & Level */}
-        <div className="flex items-center justify-between md:justify-start gap-4">
+        <div className="flex items-center gap-3">
           <LevelProgress
             level={stats.level}
             currentXp={stats.currentXp}
             maxXp={stats.maxXp}
           />
+        </div>
+
+        {/* Right Side: Currency Badges & Settings */}
+        <div className="flex items-center gap-2 sm:gap-3.5">
+          <CoinBadge amount={stats.coins} />
+          <GemBadge amount={stats.gems} />
           
-          {/* Sound Control for quick toggle */}
+          {/* Universal Sound Toggle HUD */}
           <button
             onClick={toggleSound}
-            className="p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl cursor-pointer transition-all md:hidden"
+            className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl cursor-pointer transition-all hover:scale-105"
             aria-label="Tắt/Bật nhạc"
           >
             {soundEnabled ? <Volume2 className="w-4 h-4 text-cta" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
           </button>
-        </div>
 
-        {/* Right Side: Currency Badges & Settings */}
-        <div className="flex items-center justify-end gap-3.5">
-          <CoinBadge amount={stats.coins} />
-          <GemBadge amount={stats.gems} />
-          
-          {/* Desktop Sound HUD */}
-          <button
-            onClick={toggleSound}
-            className="hidden md:block p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl cursor-pointer transition-all hover:scale-105"
-            aria-label="Tắt/Bật nhạc"
+          {/* Settings Shortcut HUD */}
+          <Link
+            href="/settings"
+            className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl cursor-pointer transition-all hover:scale-105 flex items-center justify-center"
+            aria-label="Cài đặt"
           >
-            {soundEnabled ? <Volume2 className="w-4.5 h-4.5 text-cta" /> : <VolumeX className="w-4.5 h-4.5 text-slate-400" />}
-          </button>
+            <Settings className="w-4 h-4 text-slate-400 hover:text-slate-200" />
+          </Link>
         </div>
       </header>
 

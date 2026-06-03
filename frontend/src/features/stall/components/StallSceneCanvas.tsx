@@ -26,7 +26,7 @@ export const StallSceneCanvas: React.FC = () => {
         destroyApp = destroy;
 
         // 2. Instantiate our gorgeous Stall Scene drawing layers
-        sceneInstance = new StallScene(app.stage);
+        sceneInstance = new StallScene(app.stage, app);
 
         setLoading(false);
       } catch (err) {

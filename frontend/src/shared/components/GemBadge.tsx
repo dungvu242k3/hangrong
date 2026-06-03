@@ -46,7 +46,7 @@ export const GemBadge: React.FC<GemBadgeProps> = ({ amount, className = "" }) =>
       <span className="font-bold text-white text-sm md:text-base drop-shadow-[0_0_6px_rgba(255,255,255,0.15)]">
         {formattedAmount}
       </span>
-      <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider">Ngọc</span>
+      <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider hidden sm:inline">Ngọc</span>
     </div>
   );
 };

@@ -37,7 +37,7 @@ export const CoinBadge: React.FC<CoinBadgeProps> = ({ amount, className = "" }) 
       <span className="font-bold text-white text-sm md:text-base drop-shadow-[0_0_6px_rgba(255,255,255,0.15)]">
         {formattedAmount}
       </span>
-      <span className="text-amber-400 text-xs font-bold uppercase tracking-wider">Xu</span>
+      <span className="text-amber-400 text-xs font-bold uppercase tracking-wider hidden sm:inline">Xu</span>
     </div>
   );
 };

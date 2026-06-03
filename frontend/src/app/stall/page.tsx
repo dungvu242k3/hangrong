@@ -215,9 +215,9 @@ export default function StallPage() {
           <button
             onClick={handleUpgradeStall}
             disabled={isUpgrading}
-            className="flex items-center justify-between gap-3 bg-linear-to-br from-[#EAB308] to-cta hover:from-[#F59E0B] hover:to-[#EA580C] text-white py-2.5 px-4.5 rounded-2xl cursor-pointer transition-all shadow-retro-md hover:scale-103 font-body font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-cta/20"
+            className="flex items-center justify-center gap-3 bg-linear-to-br from-[#EAB308] to-cta hover:from-[#F59E0B] hover:to-[#EA580C] text-white py-2.5 px-6 rounded-2xl cursor-pointer transition-all shadow-retro-md hover:scale-103 font-body font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-cta/20"
           >
-            <ArrowUpCircle className="w-5 h-5 animate-pulse" />
+            <ArrowUpCircle className="w-5 h-5 animate-pulse shrink-0" />
             <div className="text-left">
               <p className="leading-tight">{isUpgrading ? "Đang nâng..." : "Nâng cấp sạp"}</p>
               <p className="text-[10px] text-white/80 font-normal">Chi phí: {level * 1000} Xu</p>
@@ -230,7 +230,7 @@ export default function StallPage() {
           <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-1 select-none">
             <span className="flex items-center gap-1"><Info className="w-4 h-4 text-slate-500" /> Bấm trực tiếp vào các ô sạp tròn để bày hàng hoặc thu hoạch tiền xu.</span>
           </div>
-          <div className="retro-border-cta p-3 bg-slate-950 rounded-3xl glow-cta relative overflow-hidden shadow-2xl">
+          <div className="retro-border-cta p-1.5 sm:p-3 bg-slate-950 rounded-3xl glow-cta relative overflow-hidden shadow-2xl">
             <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-slate-900 border border-slate-700/80 rounded-full px-4 py-0.5 text-[8px] font-retro text-[#EAB308] z-20 opacity-80 uppercase tracking-widest">
               ★ TẠ HIỆN ARCADE ★
             </div>
