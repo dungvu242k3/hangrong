@@ -75,16 +75,14 @@ export default function SettingsPage() {
                     </div>
                     <div className="space-y-1">
                       <h4 className="font-bold text-xl text-slate-800 flex items-center gap-2">
-                        {player.displayName}
-                        <span className="bg-cta/10 text-cta text-[10px] font-retro py-0.5 px-2.5 rounded-full">
-                          {player.role === "admin" ? "ADMIN" : "PLAYER"}
-                        </span>
+                        {player.username}
                       </h4>
                       <p className="text-slate-400 text-xs font-semibold flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5" /> {player.email}
+                        <Mail className="w-3.5 h-3.5" /> {player.email || "Chưa cập nhật email"}
                       </p>
                     </div>
                   </div>
+
 
                   {/* Level & XP Progression */}
                   <div className="space-y-2">
@@ -122,11 +120,12 @@ export default function SettingsPage() {
               <div className="border-t border-slate-100 pt-5 flex justify-end gap-3">
                 <Button
                   onClick={logout}
-                  variant="danger"
-                  className="font-retro text-[10px] tracking-wider py-3 px-6 shadow-sm flex items-center gap-2 cursor-pointer"
+                  variant="ghost"
+                  className="bg-red-500 hover:bg-red-600 text-white hover:text-white font-retro text-[10px] tracking-wider py-3 px-6 shadow-sm flex items-center gap-2 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" /> ĐĂNG XUẤT TÀI KHOẢN
                 </Button>
+
               </div>
             </div>
 
