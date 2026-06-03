@@ -1,0 +1,23 @@
+# Git & IDE
+.git
+.gitignore
+.vscode
+.idea
+
+# Tmp from air
+tmp/
+
+# Docs
+README.md
+DATABASE.md
+SECURITY.md
+*.md
+
+# Env files (injected via compose)
+.env
+.env.local
+.env.example
+
+# OS
+.DS_Store
+Thumbs.db

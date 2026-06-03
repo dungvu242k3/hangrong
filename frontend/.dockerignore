@@ -1,0 +1,30 @@
+# Dependencies (installed in container)
+node_modules
+
+# Next.js build cache
+.next
+
+# Git & IDE
+.git
+.gitignore
+.vscode
+.idea
+
+# Docs
+README.md
+PLAN_SUMMARY.md
+AGENTS.md
+CLAUDE.md
+*.md
+
+# Build info
+tsconfig.tsbuildinfo
+
+# Env files (injected via compose)
+.env
+.env.local
+.env.example
+
+# OS
+.DS_Store
+Thumbs.db

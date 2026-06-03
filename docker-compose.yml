@@ -1,0 +1,123 @@
+# ============================================================
+# Hang Rong — Docker Compose (Development)
+#
+# Services:
+#   - db        : PostgreSQL 16 with auto-migration
+#   - backend   : Go API with Air hot-reload
+#   - frontend  : Next.js with hot-reload
+#
+# Hot-reload:
+#   - Backend:  Air watches .go/.sql files → auto rebuild
+#   - Frontend: Next.js dev server + WATCHPACK_POLLING
+#   - Database: Migrations run on first start; data persists
+#
+# Usage:
+#   docker compose up              # Start all services
+#   docker compose up -d           # Start in background
+#   docker compose down            # Stop all services
+#   docker compose down -v         # Stop & delete DB data
+#   docker compose logs -f backend # Follow backend logs
+# ============================================================
+
+services:
+  # ── PostgreSQL Database ────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: hangrong-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hangrong
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sat24042003
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persist database data across container restarts
+      - postgres_data:/var/lib/postgresql/data
+      # Auto-run migrations on first start
+      - ./backend/migrations:/docker-entrypoint-initdb.d/migrations:ro
+      - ./database/init-db.sh:/docker-entrypoint-initdb.d/99-init-db.sh:ro
+    networks:
+      - hangrong-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hangrong"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── Go Backend (Air hot-reload) ────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      target: development
+    container_name: hangrong-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Override DB host to point to Docker service name
+      HR_ADDR: ":8080"
+      HR_ALLOWED_ORIGIN: "http://localhost:3000"
+      HR_ALLOWED_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001"
+      HR_MAX_BODY_BYTES: "1048576"
+      HR_ENABLE_HSTS: "false"
+      HR_REQUEST_TIMEOUT: "5s"
+      HR_READ_TIMEOUT: "5s"
+      HR_WRITE_TIMEOUT: "10s"
+      HR_IDLE_TIMEOUT: "60s"
+      HR_SHUTDOWN_TIMEOUT: "10s"
+      DATABASE_URL: "postgres://postgres:sat24042003@db:5432/hangrong?sslmode=disable"
+      PGHOST: db
+      PGPORT: "5432"
+      PGDATABASE: hangrong
+      PGUSER: postgres
+      PGPASSWORD: sat24042003
+      REDIS_URL: ""
+      ASSET_BASE_URL: "http://localhost:3000"
+    ports:
+      - "8080:8080"
+    volumes:
+      # Bind-mount source code → Air detects changes → auto rebuild
+      - ./backend:/app
+      # Anonymous volume: keep Go module cache inside container
+      - /app/tmp
+    networks:
+      - hangrong-net
+
+  # ── Next.js Frontend (hot-reload) ─────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    container_name: hangrong-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_ENABLE_MOCK_FALLBACK: "false"
+      NEXT_PUBLIC_API_URL: "http://localhost:8080/api"
+      WATCHPACK_POLLING: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "3000:3000"
+    volumes:
+      # Bind-mount source code → Next.js dev server detects changes
+      - ./frontend:/app
+      # Anonymous volume: keep node_modules from container build
+      - /app/node_modules
+      # Anonymous volume: keep .next build cache inside container
+      - /app/.next
+    networks:
+      - hangrong-net
+
+# ── Networks ─────────────────────────────────────────────────
+networks:
+  hangrong-net:
+    driver: bridge
+
+# ── Volumes ──────────────────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local

@@ -1,50 +1,87 @@
 package game
 
-import "slices"
+import (
+	"database/sql"
+)
 
 type SocialService struct {
-	store *Store
+	db *sql.DB
 }
 
-func NewSocialService(store *Store) *SocialService {
-	return &SocialService{store: store}
+func NewSocialService(db *sql.DB) *SocialService {
+	return &SocialService{db: db}
 }
 
 func (s *SocialService) Friends() []Friend {
-	s.store.mu.RLock()
-	defer s.store.mu.RUnlock()
-
-	out := make([]Friend, len(s.store.friends))
-	copy(out, s.store.friends)
-	return out
+	// Return the default mock friends to maintain the offline single-player neighbor gameplay
+	return []Friend{
+		{ID: "friend-lan", Username: "co-lan", Level: 4, Coins: 1840, StallName: "Sap Co Lan", CanHelp: true, CanPrank: true},
+		{ID: "friend-nam", Username: "anh-nam", Level: 3, Coins: 1210, StallName: "Banh Mi Anh Nam", CanHelp: true, CanPrank: false},
+		{ID: "friend-ha", Username: "be-ha", Level: 5, Coins: 2450, StallName: "Tra Da Be Ha", CanHelp: false, CanPrank: true},
+	}
 }
 
 func (s *SocialService) NeighborSlots(neighborID string) ([]StallSlot, error) {
-	s.store.mu.RLock()
-	defer s.store.mu.RUnlock()
-
-	if !slices.ContainsFunc(s.store.friends, func(friend Friend) bool { return friend.ID == neighborID }) {
+	friends := s.Friends()
+	found := false
+	for _, friend := range friends {
+		if friend.ID == neighborID {
+			found = true
+			break
+		}
+	}
+	if !found {
 		return nil, ErrNotFound
 	}
 
-	productID := "banh-mi"
-	name := "Banh mi"
-	icon := "sandwich"
+	// Fetch real Banh Mi product ID from PostgreSQL
+	var pID string
+	var pName string
+	var pIcon string
+	var pPrice int64
+	err := s.db.QueryRow("SELECT id, name, icon_name, sell_price FROM products WHERE code = 'BANH_MI'").Scan(&pID, &pName, &pIcon, &pPrice)
+	if err != nil {
+		// Fallback values
+		pID = "banh-mi"
+		pName = "Banh mi"
+		pIcon = "sandwich"
+		pPrice = 90
+	}
+
 	return []StallSlot{
-		{ID: neighborID + "-slot-1", ProductID: &productID, ProductName: &name, ProductIcon: &icon, TimeRemaining: 0, TotalTime: 20, IsReadyToCollect: true, CoinsReward: 90},
-		{ID: neighborID + "-slot-2", ProductID: nil, ProductName: nil, ProductIcon: nil, TimeRemaining: 0, TotalTime: 0, IsReadyToCollect: false, CoinsReward: 0},
+		{
+			ID:               neighborID + "-slot1",
+			ProductID:        &pID,
+			ProductName:      &pName,
+			ProductIcon:      &pIcon,
+			TimeRemaining:    0,
+			TotalTime:        20,
+			IsReadyToCollect: true,
+			CoinsReward:      pPrice,
+		},
+		{
+			ID:               neighborID + "-slot2",
+			ProductID:        nil,
+			ProductName:      nil,
+			ProductIcon:      nil,
+			TimeRemaining:    0,
+			TotalTime:        0,
+			IsReadyToCollect: false,
+			CoinsReward:      0,
+		},
 	}, nil
 }
 
 func (s *SocialService) NeighborAction(userID, neighborID, action string) (int, error) {
-	s.store.mu.Lock()
-	defer s.store.mu.Unlock()
-
-	user, err := s.store.getUserLocked(userID)
-	if err != nil {
-		return 0, err
+	friends := s.Friends()
+	found := false
+	for _, friend := range friends {
+		if friend.ID == neighborID {
+			found = true
+			break
+		}
 	}
-	if !slices.ContainsFunc(s.store.friends, func(friend Friend) bool { return friend.ID == neighborID }) {
+	if !found {
 		return 0, ErrNotFound
 	}
 
@@ -52,7 +89,23 @@ func (s *SocialService) NeighborAction(userID, neighborID, action string) (int, 
 	if action == "prank" {
 		gained = 6
 	}
-	user.CurrentXP += gained
-	recalculateLevel(user)
+
+	tx, err := s.db.Begin()
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+
+	// Update user XP in database
+	_, _, _, err = addXP(tx, userID, gained)
+	if err != nil {
+		return 0, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+
 	return gained, nil
 }
+

@@ -1,5 +1,6 @@
 import { Container, Graphics, Text, TextStyle, Ticker } from "pixi.js";
 import { gameEmitter } from "../events/gameEmitter";
+import { getProductVisual } from "../../shared/lib/productHelper";
 
 interface SlotData {
   id: string;
@@ -340,7 +341,7 @@ export class StallScene {
       g.fill(0xFED7AA);
 
       // Update text to emoji icon
-      textLabel.text = slot.productIcon || "🥖";
+      textLabel.text = slot.productIcon ? getProductVisual(slot.productIcon).emoji : "🥖";
       textLabel.style.fontSize = 28;
       textLabel.x = slot.x - textLabel.width / 2;
       textLabel.y = slot.y - textLabel.height / 2;
@@ -532,7 +533,9 @@ export class StallScene {
       fill: "#1E293B",
     });
     
-    const label = new Text({ text: "MUA 🥖!", style: textStyle });
+    const slot = this.slots[customer.slotIndex];
+    const emoji = slot.productIcon ? getProductVisual(slot.productIcon).emoji : "🥖";
+    const label = new Text({ text: `MUA ${emoji}!`, style: textStyle });
     label.x = -label.width / 2;
     label.y = -55;
 

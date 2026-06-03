@@ -1,5 +1,7 @@
 package game
 
+import "database/sql"
+
 type Service struct {
 	Auth         *AuthService
 	Player       *PlayerService
@@ -12,21 +14,18 @@ type Service struct {
 	Social       *SocialService
 }
 
-func NewService() *Service {
-	store := NewStore()
+func NewService(db *sql.DB) *Service {
 	svc := &Service{
-		Auth:         NewAuthService(store),
-		Player:       NewPlayerService(store),
-		Product:      NewProductService(store),
-		ImportOrder:  NewImportOrderService(store),
-		InventorySvc: NewInventoryService(store),
-		Selling:      NewSellingService(store),
-		Stall:        NewStallService(store),
-		Quest:        NewQuestService(store),
-		Social:       NewSocialService(store),
+		Auth:         NewAuthService(db),
+		Player:       NewPlayerService(db),
+		Product:      NewProductService(db),
+		ImportOrder:  NewImportOrderService(db),
+		InventorySvc: NewInventoryService(db),
+		Selling:      NewSellingService(db),
+		Stall:        NewStallService(db),
+		Quest:        NewQuestService(db),
+		Social:       NewSocialService(db),
 	}
-
-	_, _ = svc.Auth.Register("demo", "demo@example.com", "123456")
 	return svc
 }
 

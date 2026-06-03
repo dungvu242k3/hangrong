@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Store, Package, Import, Users, ClipboardList, Settings, Volume2, VolumeX } from "lucide-react";
 import { useUiStore } from "@/shared/stores/uiStore";
@@ -98,9 +99,9 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
             const Icon = item.icon;
             const isActive = pathname === item.path;
             return (
-              <button
+              <Link
                 key={item.path}
-                onClick={() => router.push(item.path)}
+                href={item.path}
                 className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-semibold transition-all duration-200 cursor-pointer group ${
                   isActive
                     ? "bg-cta text-white shadow-retro-md"
@@ -109,20 +110,20 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
               >
                 <Icon className={`w-5 h-5 transition-transform duration-200 group-hover:scale-110 ${isActive ? "text-white" : "text-slate-500 group-hover:text-cta"}`} />
                 <span className="text-sm">{item.name}</span>
-              </button>
+              </Link>
             );
           })}
         </nav>
 
         {/* Footer Settings */}
         <div className="p-4 border-t border-slate-800">
-          <button
-            onClick={() => router.push("/settings")}
+          <Link
+            href="/settings"
             className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-semibold text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-all cursor-pointer"
           >
             <Settings className="w-5 h-5 text-slate-500" />
             <span className="text-sm">Cài đặt</span>
-          </button>
+          </Link>
         </div>
       </aside>
 
@@ -137,9 +138,9 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
           const Icon = item.icon;
           const isActive = pathname === item.path;
           return (
-            <button
+            <Link
               key={item.path}
-              onClick={() => router.push(item.path)}
+              href={item.path}
               className="flex flex-col items-center gap-1 py-1 px-3 cursor-pointer group transition-all"
               style={{ minWidth: "64px" }}
             >
@@ -159,7 +160,7 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
               >
                 {item.name}
               </span>
-            </button>
+            </Link>
           );
         })}
       </nav>

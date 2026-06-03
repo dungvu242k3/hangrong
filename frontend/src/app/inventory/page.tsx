@@ -7,6 +7,7 @@ import { BottomSheet } from "@/shared/components/BottomSheet";
 import { Button } from "@/shared/components/Button";
 import { useInventory } from "@/shared/hooks/useInventory";
 import { InventoryItem } from "@/shared/types/api.types";
+import { getProductVisual } from "@/shared/lib/productHelper";
 
 // Fallback mock items data if inventory query is empty
 const OWNED_ITEMS: InventoryItem[] = [
@@ -128,8 +129,8 @@ export default function InventoryPage() {
 
                 {/* Header details */}
                 <div className="flex items-center gap-3">
-                  <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center text-3.5xl shadow-sm transition-transform duration-200 group-hover:scale-105 ${item.color}`}>
-                    {item.iconName}
+                  <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center text-3.5xl shadow-sm transition-transform duration-200 group-hover:scale-105 ${getProductVisual(item.iconName).colorClass}`}>
+                    {getProductVisual(item.iconName).emoji}
                   </div>
                   <div>
                     <h4 className="font-bold text-lg text-slate-800 leading-tight">{item.name}</h4>
@@ -197,8 +198,8 @@ export default function InventoryPage() {
               {/* Brief details & Description */}
               <div className="space-y-3">
                 <div className="flex items-center gap-4 bg-slate-100 border border-slate-200 p-4 rounded-2xl">
-                  <div className="w-14 h-14 bg-white border border-slate-200 rounded-2xl flex items-center justify-center text-3.5xl">
-                    {selectedItem.iconName}
+                  <div className={`w-14 h-14 border rounded-2xl flex items-center justify-center text-3.5xl ${getProductVisual(selectedItem.iconName).colorClass}`}>
+                    {getProductVisual(selectedItem.iconName).emoji}
                   </div>
                   <div>
                     <h4 className="font-bold text-lg text-slate-800">Thông số kho đồ</h4>
@@ -208,7 +209,7 @@ export default function InventoryPage() {
                 
                 <p className="text-sm text-slate-500 leading-relaxed bg-[#F8FAFC] border-2 border-slate-200 rounded-2xl p-4 flex items-start gap-2.5">
                   <Info className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
-                  <span className="font-semibold">{selectedItem.description}</span>
+                  <span className="font-semibold">{selectedItem.description || getProductVisual(selectedItem.iconName).description}</span>
                 </p>
               </div>
 

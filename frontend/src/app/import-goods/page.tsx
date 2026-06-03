@@ -8,6 +8,7 @@ import { Button } from "@/shared/components/Button";
 import { useImport } from "@/shared/hooks/useImport";
 import { usePlayer } from "@/shared/hooks/usePlayer";
 import { Product, ImportOrder } from "@/shared/types/api.types";
+import { getProductVisual } from "@/shared/lib/productHelper";
 
 // Fallback products data if catalog is loading
 const STREET_PRODUCTS: Product[] = [
@@ -208,8 +209,8 @@ export default function ImportGoodsPage() {
 
                   {/* Header info */}
                   <div className="flex items-center gap-3">
-                    <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center text-3.5xl shadow-sm ${product.color}`}>
-                      {product.iconName}
+                    <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center text-3.5xl shadow-sm ${getProductVisual(product.iconName).colorClass}`}>
+                      {getProductVisual(product.iconName).emoji}
                     </div>
                     <div>
                       <h4 className="font-bold text-lg text-slate-800 leading-tight">{product.name}</h4>
@@ -264,8 +265,8 @@ export default function ImportGoodsPage() {
             <div className="space-y-6 select-none font-body">
               {/* Product brief info */}
               <div className="flex items-center gap-4 bg-slate-100 border border-slate-200 p-4 rounded-2xl">
-                <div className="w-14 h-14 bg-white border border-slate-200 rounded-2xl flex items-center justify-center text-3.5xl">
-                  {selectedProduct.iconName}
+                <div className={`w-14 h-14 border rounded-2xl flex items-center justify-center text-3.5xl ${getProductVisual(selectedProduct.iconName).colorClass}`}>
+                  {getProductVisual(selectedProduct.iconName).emoji}
                 </div>
                 <div>
                   <h4 className="font-bold text-lg text-slate-800">{selectedProduct.name}</h4>

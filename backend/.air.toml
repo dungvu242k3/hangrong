@@ -1,0 +1,33 @@
+# Air configuration — Go live-reload for development
+# https://github.com/air-verse/air
+
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  # Build command
+  cmd = "go build -o ./tmp/hangrong-api ./cmd/api"
+  # Binary to run after build
+  bin = "./tmp/hangrong-api"
+  full_bin = "sh -c './scripts/apply-migrations.sh && ./tmp/hangrong-api'"
+  # Watch these file extensions
+  include_ext = ["go", "tpl", "tmpl", "html", "sql"]
+  # Exclude directories
+  exclude_dir = ["tmp", "vendor", "node_modules", ".git"]
+  # Exclude files
+  exclude_file = []
+  # Wait before rebuilding (ms)
+  delay = 500
+
+[log]
+  time = false
+
+[color]
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  # Delete tmp directory on exit
+  clean_on_exit = true

@@ -11,6 +11,7 @@ import { useStall } from "@/shared/hooks/useStall";
 import { usePlayer } from "@/shared/hooks/usePlayer";
 import { useInventory } from "@/shared/hooks/useInventory";
 import { InventoryItem } from "@/shared/types/api.types";
+import { getProductVisual } from "@/shared/lib/productHelper";
 
 // Dynamic import with ssr: false strictly avoids Node SSR crashes with WebGL canvas!
 const StallSceneCanvas = dynamic(
@@ -252,8 +253,8 @@ export default function StallPage() {
                           className="bg-white border-2 border-slate-200 hover:border-cta/40 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all duration-150 active:scale-99 hover:-translate-y-0.5 shadow-sm"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-center text-2.5xl">
-                              {item.iconName}
+                            <div className={`w-12 h-12 border rounded-xl flex items-center justify-center text-2.5xl ${getProductVisual(item.iconName).colorClass}`}>
+                              {getProductVisual(item.iconName).emoji}
                             </div>
                             <div>
                               <h4 className="font-bold text-base text-slate-800">{item.name}</h4>
