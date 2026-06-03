@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS sales;
+DROP TABLE IF EXISTS stall_slots;
+DROP TABLE IF EXISTS stalls;

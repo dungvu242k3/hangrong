@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS user_quests;
+DROP TABLE IF EXISTS quests;
+DROP TABLE IF EXISTS upgrade_configs;

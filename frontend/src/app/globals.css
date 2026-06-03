@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+
+:root {
+  /* Design Tokens from MASTER.md */
+  --color-primary: #3B82F6;
+  --color-secondary: #60A5FA;
+  --color-cta: #F97316;
+  --color-background: #F8FAFC;
+  --color-text: #1E293B;
+  
+  --color-coin: #EAB308;
+  --color-gem: #10B981;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --glow-coin: 0 0 20px rgba(234, 179, 8, 0.6);
+}
+
+@theme {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-cta: var(--color-cta);
+  --color-bg-base: var(--color-background);
+  --color-text-base: var(--color-text);
+  --color-coin: var(--color-coin);
+  --color-gem: var(--color-gem);
+
+  --font-heading: var(--font-caveat), cursive;
+  --font-body: var(--font-quicksand), sans-serif;
+  --font-retro: var(--font-press-start), monospace;
+  --font-pixel: var(--font-vt323), monospace;
+
+  --shadow-retro-md: var(--shadow-md);
+  --shadow-retro-lg: var(--shadow-lg);
+  --shadow-retro-xl: var(--shadow-xl);
+}
+
+/* Global Styles */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-quicksand), sans-serif;
+}
+
+/* Heading styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-caveat), cursive;
+}
+
+/* Premium Glassmorphic Overlay */
+.glass-overlay {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(30, 41, 59, 0.1);
+}
+
+/* CRT Scanline Game Overlays */
+.crt-overlay {
+  position: relative;
+  overflow: hidden;
+}
+.crt-overlay::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+  z-index: 10;
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Premium Animations */
+@keyframes coin-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-float {
+  animation: coin-float 2s ease-in-out infinite;
+}

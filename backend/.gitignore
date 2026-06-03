@@ -1,0 +1,8 @@
+# env/secrets: never commit real runtime env files
+.env*
+node_modules/
+.next/
+dist/
+build/
+
+*.log
