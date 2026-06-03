@@ -14,7 +14,12 @@ export interface ApiResponse<T = unknown> {
   };
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+let base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+if (base && !base.endsWith("/api") && !base.endsWith("/api/")) {
+  base = base.endsWith("/") ? `${base}api` : `${base}/api`;
+}
+const BASE_URL = base;
+
 
 // Simple local memory storage for session access token
 let accessToken: string | null = null;
