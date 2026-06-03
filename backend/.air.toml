@@ -31,3 +31,7 @@ tmp_dir = "tmp"
 [misc]
   # Delete tmp directory on exit
   clean_on_exit = true
+
+[watcher]
+  poll = true
+

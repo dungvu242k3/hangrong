@@ -12,12 +12,18 @@ import { getProductVisual } from "@/shared/lib/productHelper";
 
 // Fallback products data if catalog is loading
 const STREET_PRODUCTS: Product[] = [
-  { id: "p1", name: "Bánh Mì Pate", category: "food", importPrice: 80, sellPrice: 150, timeSeconds: 60, levelRequired: 1, iconName: "🥖", color: "bg-amber-100 border-amber-300" },
-  { id: "p2", name: "Trà Đá Vỉa Hè", category: "drink", importPrice: 20, sellPrice: 50, timeSeconds: 30, levelRequired: 1, iconName: "🍵", color: "bg-teal-100 border-teal-300" },
-  { id: "p3", name: "Bánh Tráng Trộn", category: "food", importPrice: 150, sellPrice: 300, timeSeconds: 120, levelRequired: 2, iconName: "🥗", color: "bg-orange-100 border-orange-300" },
-  { id: "p4", name: "Nước Mía Siêu Sạch", category: "drink", importPrice: 60, sellPrice: 130, timeSeconds: 90, levelRequired: 2, iconName: "🍹", color: "bg-emerald-100 border-emerald-300" },
-  { id: "p5", name: "Bắp Nướng Mỡ Hành", category: "food", importPrice: 200, sellPrice: 420, timeSeconds: 180, levelRequired: 3, iconName: "🌽", color: "bg-yellow-100 border-yellow-300" },
-  { id: "p6", name: "Cà Phê Sữa Đá", category: "drink", importPrice: 100, sellPrice: 220, timeSeconds: 150, levelRequired: 3, iconName: "☕", color: "bg-yellow-900/10 border-yellow-600/30" },
+  { id: "p1", name: "Bánh mì", category: "food", importPrice: 50, sellPrice: 90, timeSeconds: 20, levelRequired: 1, iconName: "sandwich", color: "bg-amber-100 border-amber-300" },
+  { id: "p2", name: "Trà đá", category: "drink", importPrice: 25, sellPrice: 45, timeSeconds: 15, levelRequired: 1, iconName: "cup-soda", color: "bg-teal-100 border-teal-300" },
+  { id: "p3", name: "Hướng dương", category: "food", importPrice: 35, sellPrice: 60, timeSeconds: 25, levelRequired: 1, iconName: "flower", color: "bg-yellow-100 border-yellow-300" },
+  { id: "p4", name: "Bánh cuốn", category: "food", importPrice: 85, sellPrice: 140, timeSeconds: 35, levelRequired: 2, iconName: "scroll", color: "bg-indigo-100 border-indigo-300" },
+  { id: "p5", name: "Tàu hũ nóng", category: "drink", importPrice: 70, sellPrice: 120, timeSeconds: 30, levelRequired: 2, iconName: "soup", color: "bg-rose-100 border-rose-300" },
+  { id: "p6", name: "Tò he", category: "toy", importPrice: 120, sellPrice: 210, timeSeconds: 45, levelRequired: 3, iconName: "toy-brick", color: "bg-emerald-100 border-emerald-300" },
+  { id: "p7", name: "Nem chua rán", category: "food", importPrice: 180, sellPrice: 350, timeSeconds: 80, levelRequired: 4, iconName: "bento", color: "bg-rose-100 border-rose-300" },
+  { id: "p8", name: "Yogurt nếp cẩm", category: "drink", importPrice: 130, sellPrice: 270, timeSeconds: 70, levelRequired: 5, iconName: "wine", color: "bg-indigo-100 border-indigo-300" },
+  { id: "p9", name: "Xôi xéo thơm dẻo", category: "food", importPrice: 250, sellPrice: 520, timeSeconds: 150, levelRequired: 6, iconName: "bowl", color: "bg-amber-100 border-amber-300" },
+  { id: "p10", name: "Sấu đá phố cổ", category: "drink", importPrice: 100, sellPrice: 220, timeSeconds: 60, levelRequired: 7, iconName: "glass", color: "bg-green-100 border-green-300" },
+  { id: "p11", name: "Bắp nướng mỡ hành", category: "food", importPrice: 300, sellPrice: 650, timeSeconds: 180, levelRequired: 8, iconName: "lollipop", color: "bg-yellow-100 border-yellow-300" },
+  { id: "p12", name: "Phở gánh Hà Nội", category: "food", importPrice: 500, sellPrice: 1100, timeSeconds: 240, levelRequired: 10, iconName: "ramen", color: "bg-red-100 border-red-300" },
 ];
 
 export default function ImportGoodsPage() {
@@ -104,24 +110,24 @@ export default function ImportGoodsPage() {
     <GameShell>
       <div className="space-y-8 select-none">
         {/* 1. Page Header description */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-4 gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-4 gap-4">
           <div>
-            <h2 className="text-4xl font-bold font-heading text-slate-800 flex items-center gap-2">
-              <Import className="w-8 h-8 text-cta" /> Nhập Hàng Về Kho
+            <h2 className="text-sm md:text-lg font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
+              <Import className="w-7 h-7 text-cta animate-float" /> NHẬP HÀNG VỀ KHO
             </h2>
-            <p className="text-sm text-slate-500 font-semibold mt-1">
+            <p className="text-xs text-slate-400 font-semibold mt-2 font-body tracking-wider uppercase">
               Nhập nguyên liệu đặc sản đường phố, phân phối gánh hàng rong của bạn.
             </p>
           </div>
           
-          <div className="bg-[#3B82F6]/5 border border-[#3B82F6]/10 py-2 px-4 rounded-2xl text-xs font-semibold text-[#3B82F6] flex items-center gap-2">
-            <Flame className="w-4.5 h-4.5 text-cta" /> Đơn hàng về sẽ tự động xếp vào Kho đồ chính.
+          <div className="border-2 border-dashed border-primary/40 bg-primary/5 py-2px px-4 rounded-xl text-xs font-semibold text-primary flex items-center gap-2">
+            <Flame className="w-4 h-4 text-cta" /> Đơn hàng về sẽ tự động xếp vào Kho đồ chính.
           </div>
         </div>
 
         {/* 2. ACTIVE IMPORTS VIEWPORT (CRITICAL ORDER BLOCK) */}
         {activeOrders.length > 0 && (
-          <div className="bg-slate-900 text-slate-200 border-2 border-slate-700 rounded-3xl p-6 shadow-md relative overflow-hidden crt-overlay">
+          <div className="bg-slate-950 text-slate-200 border-4 border-double border-slate-700 rounded-2xl p-6 shadow-md relative overflow-hidden crt-overlay">
             <h3 className="font-retro text-xs text-[#EAB308] uppercase tracking-wider mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#EAB308] animate-spin" style={{ animationDuration: "3s" }} /> 
               Xe Hàng Đang Về ({activeOrders.length})
@@ -135,18 +141,18 @@ export default function ImportGoodsPage() {
                 return (
                   <div
                     key={order.id}
-                    className={`bg-slate-800 border-2 rounded-2xl p-4 flex flex-col justify-between gap-3 transition-all ${
-                      isReady ? "border-gem shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "border-slate-700"
+                    className={`bg-slate-900 border-4 border-double rounded-xl p-4 flex flex-col justify-between gap-3 transition-all ${
+                      isReady ? "border-gem shadow-[0_0_15px_rgba(16,185,129,0.2)]" : "border-slate-800"
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-bold text-base text-slate-100">{order.name}</h4>
-                        <p className="text-xs text-slate-400 font-semibold mt-0.5">Số lượng: {order.quantity} cái</p>
+                        <h4 className="font-bold text-base text-slate-100 font-retro tracking-tight">{order.name}</h4>
+                        <p className="text-xs text-slate-400 font-pixel mt-1.5">Số lượng: {order.quantity} cái</p>
                       </div>
                       
                       {isReady ? (
-                        <span className="bg-gem/10 border border-gem/25 text-gem py-1 px-3.5 rounded-full text-xs font-bold flex items-center gap-1">
+                        <span className="bg-gem/10 border border-gem/30 text-gem py-1 px-3.5 rounded-lg text-xs font-retro flex items-center gap-1">
                           <CheckCircle className="w-3.5 h-3.5" /> Hàng đã về!
                         </span>
                       ) : (
@@ -162,14 +168,14 @@ export default function ImportGoodsPage() {
                         onClick={() => handleClaimOrder(order.id)}
                         variant="primary"
                         size="sm"
-                        className="w-full font-retro text-[10px] tracking-wider py-2.5"
+                        className="w-full font-retro text-xs tracking-wider py-2.5"
                       >
                         XẾP VÀO KHO
                       </Button>
                     ) : (
-                      <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-slate-700/60 p-0.5">
+                      <div className="w-full h-3 bg-slate-950 rounded-lg overflow-hidden border border-slate-800 p-0.5">
                         <div
-                          className="h-full bg-linear-to-r from-[#EAB308] to-cta rounded-full transition-all duration-1000 ease-linear"
+                          className="h-full bg-linear-to-r from-[#EAB308] to-cta rounded-sm transition-all duration-1000 ease-linear"
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
@@ -183,7 +189,7 @@ export default function ImportGoodsPage() {
 
         {/* 3. PRODUCT CATALOG GRID */}
         <div>
-          <h3 className="text-2xl font-bold font-heading text-slate-700 mb-4">Danh mục nguyên liệu hệ thống</h3>
+          <h3 className="text-sm font-bold font-retro text-slate-350 mb-4 tracking-wider uppercase">Danh mục nguyên liệu hệ thống</h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {catalogProducts.map((product) => {
@@ -193,62 +199,63 @@ export default function ImportGoodsPage() {
                 <div
                   key={product.id}
                   onClick={() => handleOpenSheet(product)}
-                  className={`card-retro relative flex flex-col justify-between gap-4 select-none ${
-                    isLocked ? "opacity-60 cursor-not-allowed border-slate-300" : "hover:border-cta/40 border-slate-200"
+                  className={`bg-slate-900 border-4 border-double rounded-xl p-5 relative flex flex-col justify-between gap-4 select-none ${
+                    isLocked ? "opacity-80 cursor-not-allowed border-slate-800" : "hover:border-cta/60 hover:shadow-[0_0_15px_rgba(249,115,22,0.2)] border-slate-700 transition-all hover:scale-103"
                   }`}
                 >
-                  {/* Lock HUD for restricted items */}
-                  {isLocked && (
-                    <div className="absolute inset-0 bg-slate-900/5 backdrop-blur-[1px] rounded-2xl flex flex-col items-center justify-center z-10 text-slate-700">
-                      <ShieldAlert className="w-8 h-8 text-slate-500 mb-1" />
-                      <span className="font-bold text-xs uppercase tracking-wider bg-slate-200 py-1.5 px-3.5 rounded-full border border-slate-300">
-                        Cấp {product.levelRequired} Mở khóa
-                      </span>
-                    </div>
-                  )}
-
                   {/* Header info */}
                   <div className="flex items-center gap-3">
-                    <div className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center text-3.5xl shadow-sm ${getProductVisual(product.iconName).colorClass}`}>
+                    <div className="w-14 h-14 bg-slate-950 border-4 border-double border-slate-800 rounded-lg flex items-center justify-center text-3.5xl shadow-inner transition-transform duration-200 group-hover:scale-110 relative">
                       {getProductVisual(product.iconName).emoji}
+                      {isLocked && (
+                        <div className="absolute -top-1.5 -right-1.5 bg-slate-850 border border-slate-700 rounded-lg p-0.5 shadow-md flex items-center justify-center">
+                          <ShieldAlert className="w-3.5 h-3.5 text-[#EAB308]" />
+                        </div>
+                      )}
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg text-slate-800 leading-tight">{product.name}</h4>
-                      <span className="bg-slate-100 text-slate-500 font-bold border border-slate-200 py-0.5 px-2 rounded-full text-[10px] uppercase mt-1 inline-block">
-                        {product.category === "food" ? "Đồ Ăn" : "Đồ Uống"}
+                      <h4 className="font-bold text-xl text-white font-pixel leading-tight">{product.name}</h4>
+                      <span className="bg-slate-800 border border-slate-700 text-slate-400 font-retro text-xs py-0.5 px-2 rounded mt-1.5 inline-block uppercase">
+                        {product.category === "food" ? "Đồ Ăn" : product.category === "drink" ? "Đồ Uống" : "Đồ Chơi"}
                       </span>
                     </div>
                   </div>
 
                   {/* Statistics layout grid */}
-                  <div className="grid grid-cols-2 gap-2 border-t border-b border-slate-100 py-3 text-sm font-body">
+                  <div className="grid grid-cols-2 gap-2 border-t border-b border-slate-800 py-3 text-xs font-pixel text-slate-400">
                     <div>
-                      <p className="text-slate-400 text-xs font-semibold">Giá nhập</p>
-                      <p className="font-bold text-slate-700 mt-0.5 flex items-center gap-1 text-base">
-                        {product.importPrice} <span className="text-[#F97316] text-xs font-bold">Xu</span>
+                      <p className="text-slate-500">Giá nhập:</p>
+                      <p className="font-bold text-coin font-retro text-xs mt-1 flex items-center gap-1">
+                        {product.importPrice} Xu
                       </p>
                     </div>
                     <div>
-                      <p className="text-slate-400 text-xs font-semibold">Thời gian</p>
-                      <p className="font-bold text-slate-700 mt-0.5 flex items-center gap-1">
-                        <Clock className="w-4 h-4 text-slate-400" /> {product.timeSeconds}s
+                      <p className="text-slate-500">Thời gian:</p>
+                      <p className="font-bold text-slate-300 mt-1 flex items-center gap-1">
+                        <Clock className="w-4 h-4 text-slate-500" /> {product.timeSeconds}s
                       </p>
                     </div>
-                    <div className="col-span-2 mt-1.5 flex items-center justify-between text-xs font-semibold bg-emerald-50 text-emerald-700 py-1.5 px-3 rounded-xl border border-emerald-100">
+                    <div className="col-span-2 mt-1.5 flex items-center justify-between text-xs font-retro bg-emerald-950/30 text-gem py-1.5 px-3 rounded-lg border border-gem/20">
                       <span className="flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5" /> Lãi ròng / chiếc:</span>
-                      <span className="font-bold">+{product.sellPrice - product.importPrice} Xu</span>
+                      <span className="font-bold text-gem">+{product.sellPrice - product.importPrice} Xu</span>
                     </div>
                   </div>
 
-                  {/* Import Button */}
-                  <Button
-                    onClick={() => {}} // Controlled by outer Card onClick
-                    disabled={isLocked}
-                    variant={isLocked ? "ghost" : "secondary"}
-                    className="w-full text-xs font-retro py-2.5"
-                  >
-                    NHẬP HÀNG
-                  </Button>
+                  {/* Import/Lock Button */}
+                  {isLocked ? (
+                    <div className="w-full text-xs font-retro py-2.5 bg-slate-950 border border-slate-850 text-slate-400 rounded-lg flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider">
+                      <ShieldAlert className="w-3.5 h-3.5 text-[#EAB308] animate-pulse" /> Cấp {product.levelRequired} Mở khóa
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => {}} // Controlled by outer Card onClick
+                      disabled={isLocked}
+                      variant="secondary"
+                      className="w-full text-xs font-retro py-2.5"
+                    >
+                      NHẬP HÀNG
+                    </Button>
+                  )}
                 </div>
               );
             })}
@@ -264,30 +271,30 @@ export default function ImportGoodsPage() {
           {selectedProduct && (
             <div className="space-y-6 select-none font-body">
               {/* Product brief info */}
-              <div className="flex items-center gap-4 bg-slate-100 border border-slate-200 p-4 rounded-2xl">
-                <div className={`w-14 h-14 border rounded-2xl flex items-center justify-center text-3.5xl ${getProductVisual(selectedProduct.iconName).colorClass}`}>
+              <div className="flex items-center gap-4 bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                <div className="w-14 h-14 bg-slate-900 border-4 border-double border-slate-800 rounded-lg flex items-center justify-center text-3.5xl">
                   {getProductVisual(selectedProduct.iconName).emoji}
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-slate-800">{selectedProduct.name}</h4>
-                  <p className="text-xs font-semibold text-slate-500">Giá nhập gốc: {selectedProduct.importPrice} Xu / cái</p>
+                  <h4 className="font-bold text-sm font-retro text-white">{selectedProduct.name}</h4>
+                  <p className="text-xs font-semibold text-slate-400 mt-1">Giá nhập gốc: {selectedProduct.importPrice} Xu / cái</p>
                 </div>
               </div>
 
               {/* Quantity selectors */}
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-600">Chọn số lượng nhập</label>
-                <div className="flex items-center justify-between gap-4 bg-white border-2 border-slate-200 rounded-2xl p-2.5">
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-400 font-retro">CHỌN SỐ LƯỢNG NHẬP</label>
+                <div className="flex items-center justify-between gap-4 bg-slate-950 border border-slate-850 rounded-xl p-2.5">
                   <button
                     onClick={() => setQuantity((q) => Math.max(q - 10, 10))}
-                    className="w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer font-bold text-xl flex items-center justify-center text-slate-600 active:scale-95 transition-all"
+                    className="w-12 h-12 bg-slate-800 hover:bg-slate-700 rounded-lg cursor-pointer font-bold text-xl flex items-center justify-center text-white active:scale-95 transition-all"
                   >
                     -
                   </button>
-                  <span className="text-2xl font-black text-slate-800 font-retro">{quantity} cái</span>
+                  <span className="text-sm md:text-base font-black text-white font-retro">{quantity} cái</span>
                   <button
                     onClick={() => setQuantity((q) => Math.min(q + 10, 100))}
-                    className="w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer font-bold text-xl flex items-center justify-center text-slate-600 active:scale-95 transition-all"
+                    className="w-12 h-12 bg-slate-800 hover:bg-slate-700 rounded-lg cursor-pointer font-bold text-xl flex items-center justify-center text-white active:scale-95 transition-all"
                   >
                     +
                   </button>
@@ -299,10 +306,10 @@ export default function ImportGoodsPage() {
                     <button
                       key={num}
                       onClick={() => setQuantity(num)}
-                      className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      className={`flex-1 py-2 rounded-lg text-[9px] font-retro border transition-all cursor-pointer ${
                         quantity === num
                           ? "bg-cta text-white border-cta"
-                          : "bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200"
+                          : "bg-slate-800 hover:bg-slate-700 text-slate-350 border-slate-750"
                       }`}
                     >
                       {num}
@@ -312,30 +319,30 @@ export default function ImportGoodsPage() {
               </div>
 
               {/* Cost & Profit breakdowns */}
-              <div className="bg-[#F8FAFC] border-2 border-slate-200 rounded-3xl p-4 space-y-2.5 text-sm font-semibold">
-                <div className="flex items-center justify-between text-slate-600">
+              <div className="bg-slate-950 border border-slate-850 rounded-xl p-4 space-y-2.5 text-xs font-semibold text-slate-450 font-pixel">
+                <div className="flex items-center justify-between text-slate-400">
                   <span>Tổng tiền nhập:</span>
-                  <span className={`font-bold flex items-center gap-1 ${canAfford ? "text-slate-800" : "text-red-500 font-black animate-pulse"}`}>
+                  <span className={`font-bold font-retro text-[10px] flex items-center gap-1 ${canAfford ? "text-white" : "text-red-500 font-black animate-pulse"}`}>
                     {totalCost} Xu
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-emerald-600">
+                <div className="flex items-center justify-between text-[#10B981]">
                   <span className="flex items-center gap-1"><TrendingUp className="w-4 h-4" /> Tổng lãi dự kiến:</span>
-                  <span className="font-bold">+{totalProfit} Xu</span>
+                  <span className="font-bold font-retro text-[10px]">+{totalProfit} Xu</span>
                 </div>
-                <div className="flex items-center justify-between text-slate-600 border-t border-slate-200 pt-2.5 mt-2">
+                <div className="flex items-center justify-between text-slate-400 border-t border-slate-800 pt-2.5 mt-2">
                   <span>Thời gian chờ hàng về:</span>
-                  <span className="font-bold flex items-center gap-1 text-slate-800">
-                    <Clock className="w-4 h-4 text-slate-400" /> {selectedProduct.timeSeconds} giây
+                  <span className="font-bold flex items-center gap-1 text-white">
+                    <Clock className="w-4 h-4 text-slate-500" /> {selectedProduct.timeSeconds} giây
                   </span>
                 </div>
               </div>
 
               {/* Insufficient balance alerts */}
               {!canAfford && (
-                <div className="bg-red-50 border border-red-100 py-3 px-4 rounded-2xl flex items-start gap-2.5 text-xs text-red-600 leading-normal">
-                  <ShieldAlert className="w-5 h-5 text-red-500 shrink-0" />
-                  <p className="font-semibold">Bạn không đủ Xu để nhập lô hàng này. Hãy buôn bán sạp hàng hiện tại để kiếm thêm Xu.</p>
+                <div className="bg-red-950/30 border border-red-900/30 py-3 px-4 rounded-xl flex items-start gap-2.5 text-[10px] text-red-400 leading-normal font-retro">
+                  <ShieldAlert className="w-5 h-5 text-red-500 shrink-0 animate-bounce" />
+                  <p>Bạn không đủ Xu để nhập lô hàng này. Hãy buôn bán sạp hàng hiện tại để kiếm thêm Xu.</p>
                 </div>
               )}
 
@@ -345,7 +352,7 @@ export default function ImportGoodsPage() {
                 disabled={!canAfford}
                 variant="primary"
                 fullWidth
-                className="py-3.5 font-retro text-sm tracking-wider"
+                className="py-3.5 font-retro text-[10px] tracking-wider"
               >
                 XÁC NHẬN NHẬP HÀNG
               </Button>

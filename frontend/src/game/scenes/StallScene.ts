@@ -87,6 +87,11 @@ export class StallScene {
 
     // Spawn customers interval
     this.startCustomerSpawnTimer();
+
+    // Notify React that PixiJS game scene is loaded and ready to receive slots sync
+    setTimeout(() => {
+      gameEmitter.emit("game:ready");
+    }, 50);
   }
 
   // 1. DRAW STREET SIDELINES
@@ -185,13 +190,6 @@ export class StallScene {
     this.slotGraphics = [];
     this.slotTexts = [];
 
-    const textStyle = new TextStyle({
-      fontFamily: "Arial",
-      fontSize: 11,
-      fontWeight: "bold",
-      fill: "#64748B",
-    });
-
     this.slots.forEach((slot, index) => {
       const slotContainer = new Graphics();
       
@@ -213,7 +211,15 @@ export class StallScene {
       this.slotGraphics.push(slotContainer);
 
       // Label text ("Trống")
-      const label = new Text({ text: "TRỐNG", style: textStyle });
+      const label = new Text({
+        text: "TRỐNG",
+        style: new TextStyle({
+          fontFamily: "Arial",
+          fontSize: 10,
+          fontWeight: "bold",
+          fill: "#64748B",
+        }),
+      });
       label.x = slot.x - label.width / 2;
       label.y = slot.y - label.height / 2;
       this.productLayer.addChild(label);
@@ -270,8 +276,35 @@ export class StallScene {
     container.x = walkFromLeft ? -50 : 850;
     container.y = 440;
 
-    // Pick a random stall slot index
-    const slotIndex = Math.floor(Math.random() * this.slots.length);
+    // Pick a target slot prioritizing ready slots, then active products
+    const currentTargetedSlotIndices = this.activeCustomers.map((c) => c.slotIndex);
+    
+    // 1. Prioritize slots that are ready to collect
+    let eligibleIndices = this.slots
+      .map((slot, idx) => ({ slot, idx }))
+      .filter(({ slot, idx }) => slot.isReadyToCollect && !currentTargetedSlotIndices.includes(idx))
+      .map(({ idx }) => idx);
+      
+    // 2. If no ready slots, prioritize slots with active products
+    if (eligibleIndices.length === 0) {
+      eligibleIndices = this.slots
+        .map((slot, idx) => ({ slot, idx }))
+        .filter(({ slot, idx }) => slot.productId !== null && !slot.isReadyToCollect && !currentTargetedSlotIndices.includes(idx))
+        .map(({ idx }) => idx);
+    }
+    
+    // 3. Fallback to untargeted slots
+    if (eligibleIndices.length === 0) {
+      eligibleIndices = this.slots
+        .map((_, idx) => idx)
+        .filter((idx) => !currentTargetedSlotIndices.includes(idx));
+    }
+    
+    // 4. Ultimate fallback to a random slot
+    const slotIndex = eligibleIndices.length > 0
+      ? eligibleIndices[Math.floor(Math.random() * eligibleIndices.length)]
+      : Math.floor(Math.random() * this.slots.length);
+      
     const targetX = this.slots[slotIndex].x;
 
     const customer: CustomerNPC = {
@@ -331,14 +364,18 @@ export class StallScene {
     g.clear();
     
     if (slot.productId) {
-      // Redraw containing product (soft orange outline)
+      // Redraw containing product (soft orange outline if selling, glowing green if ready to collect)
+      const borderColor = slot.isReadyToCollect ? 0x10B981 : 0xF97316;
+      const borderSize = slot.isReadyToCollect ? 4 : 3;
+      const bgFill = slot.isReadyToCollect ? 0xF0FDF4 : 0xFFFAF0;
+
       g.circle(slot.x, slot.y, 35);
-      g.fill(0xFFFAF0);
-      g.stroke({ color: 0xF97316, width: 3 });
+      g.fill(bgFill);
+      g.stroke({ color: borderColor, width: borderSize });
 
       // Draw item shadow
       g.ellipse(slot.x, slot.y + 10, 20, 6);
-      g.fill(0xFED7AA);
+      g.fill(slot.isReadyToCollect ? 0xDCFCE7 : 0xFED7AA);
 
       // Update text to emoji icon
       textLabel.text = slot.productIcon ? getProductVisual(slot.productIcon).emoji : "🥖";
@@ -356,7 +393,7 @@ export class StallScene {
       g.fill(0xF1F5F9);
 
       textLabel.text = "TRỐNG";
-      textLabel.style.fontSize = 11;
+      textLabel.style.fontSize = 10;
       textLabel.style.fill = "#64748B";
       textLabel.x = slot.x - textLabel.width / 2;
       textLabel.y = slot.y - textLabel.height / 2;
@@ -430,6 +467,7 @@ export class StallScene {
         
         // Draw green progress border arc
         const progressPercentage = (slot.totalTime - slot.timeRemaining) / slot.totalTime;
+        g.moveTo(slot.x, slot.y - 35);
         g.stroke({ color: 0x10B981, width: 3 });
         g.arc(slot.x, slot.y, 35, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * progressPercentage));
         g.stroke();
@@ -437,6 +475,11 @@ export class StallScene {
         if (slot.timeRemaining === 0) {
           slot.isReadyToCollect = true;
           this.triggerClaimReadyVisual(index);
+          
+          // Instantly spawn a customer NPC to buy the ready slot
+          if (this.activeCustomers.length < 3) {
+            this.spawnCustomer();
+          }
         }
       }
     });
@@ -489,32 +532,20 @@ export class StallScene {
 
   private triggerClaimReadyVisual(index: number) {
     const slot = this.slots[index];
-    const g = this.slotGraphics[index];
-
-    g.clear();
-    
-    // Draw glowing green aura
-    g.circle(slot.x, slot.y, 35);
-    g.fill(0xF0FDF4); // light green
-    g.stroke({ color: 0x10B981, width: 4 }); // emerald green border
-
-    // Blinking bounce text
-    const textLabel = this.slotTexts[index];
-    textLabel.text = "XU 💰";
-    textLabel.style.fontSize = 18;
-    textLabel.style.fill = "#10B981";
-    textLabel.x = slot.x - textLabel.width / 2;
-    textLabel.y = slot.y - textLabel.height / 2;
+    this.updateSlotVisual(slot);
   }
 
   // Draw speech bubbles for NPC customers
   private customerBuyAction(customer: CustomerNPC) {
+    const slot = this.slots[customer.slotIndex];
+    const isOccupied = slot && slot.productId !== null;
+
     const bubble = new Container();
     customer.container.addChild(bubble);
     customer.speechBubble = bubble;
 
     const bg = new Graphics();
-    bg.roundRect(-25, -60, 50, 20, 6);
+    bg.roundRect(-30, -60, 60, 20, 6); // slightly wider to fit empty text comfortably
     bg.fill(0xFFFFFF);
     bg.stroke({ color: 0x475569, width: 1.5 });
     
@@ -533,41 +564,54 @@ export class StallScene {
       fill: "#1E293B",
     });
     
-    const slot = this.slots[customer.slotIndex];
-    const emoji = slot.productIcon ? getProductVisual(slot.productIcon).emoji : "🥖";
-    const label = new Text({ text: `MUA ${emoji}!`, style: textStyle });
+    // Custom label text depending on slot occupancy
+    const bubbleText = isOccupied
+      ? `MUA ${slot.productIcon ? getProductVisual(slot.productIcon).emoji : "🥖"}!`
+      : "HẾT HÀNG? 😢";
+
+    const label = new Text({ text: bubbleText, style: textStyle });
     label.x = -label.width / 2;
     label.y = -55;
 
     bubble.addChild(bg);
     bubble.addChild(label);
 
-    // Let customer buy for 4 seconds, then happily walk off screen
+    // If slot is ready to collect, trigger auto-harvest now!
+    const isReady = slot && slot.isReadyToCollect;
+    if (isReady) {
+      setTimeout(() => {
+        this.harvestSlot(customer.slotIndex);
+      }, 150); // slight delay so they arrive and show speech bubble first
+    }
+
+    const duration = isOccupied ? 4000 : 2500; // Shorter wait if out of stock
+
+    // Let customer buy or look, then walk off screen
     setTimeout(() => {
       if (customer.speechBubble) {
         customer.container.removeChild(customer.speechBubble);
       }
       
-      // Swap speech bubble to happy heart emoji
-      const happyBubble = new Container();
-      customer.container.addChild(happyBubble);
-      customer.speechBubble = happyBubble;
+      // Swap speech bubble to resolution emoji (heart for buying, sad face for out of stock)
+      const resolutionBubble = new Container();
+      customer.container.addChild(resolutionBubble);
+      customer.speechBubble = resolutionBubble;
       
-      const happyBg = new Graphics();
-      happyBg.circle(0, -50, 10);
-      happyBg.fill(0xFDF2F8);
-      happyBg.stroke({ color: 0xF43F5E, width: 1.5 });
+      const resBg = new Graphics();
+      resBg.circle(0, -50, 10);
+      resBg.fill(isOccupied ? 0xFDF2F8 : 0xF1F5F9);
+      resBg.stroke({ color: isOccupied ? 0xF43F5E : 0x64748B, width: 1.5 });
       
       const emojiStyle = new TextStyle({ fontFamily: "Arial", fontSize: 10 });
-      const emojiText = new Text({ text: "❤️", style: emojiStyle });
+      const emojiText = new Text({ text: isOccupied ? "❤️" : "😢", style: emojiStyle });
       emojiText.x = -emojiText.width / 2;
       emojiText.y = -56;
 
-      happyBubble.addChild(happyBg);
-      happyBubble.addChild(emojiText);
+      resolutionBubble.addChild(resBg);
+      resolutionBubble.addChild(emojiText);
 
       customer.state = "leaving";
-      customer.speed = 2.5; // Walk away faster
+      customer.speed = isOccupied ? 2.5 : 2.0; // Walk away faster if bought
 
       // Remove bubble after 1.5s
       setTimeout(() => {
@@ -576,7 +620,7 @@ export class StallScene {
         }
       }, 1500);
 
-    }, 4000);
+    }, duration);
   }
 
   // Listen to events from React side

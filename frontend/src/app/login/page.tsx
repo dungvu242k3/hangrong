@@ -113,7 +113,7 @@ export default function LoginPage() {
               {/* Retro Glowing Title */}
               <div className="relative mb-8">
                 <Store className="w-24 h-24 text-cta mx-auto drop-shadow-[0_0_15px_rgba(249,115,22,0.4)] animate-bounce" />
-                <h1 className="text-7xl font-heading text-cta mt-4 drop-shadow-[0_0_20px_rgba(249,115,22,0.5)] select-none">
+                <h1 className="text-3xl sm:text-5xl md:text-7xl font-heading text-cta mt-4 drop-shadow-[0_0_20px_rgba(249,115,22,0.5)] select-none">
                   Hàng Rong
                 </h1>
                 <p className="font-retro text-xs tracking-widest text-secondary mt-2 select-none uppercase">
@@ -199,7 +199,7 @@ export default function LoginPage() {
 
               {/* Title Form */}
               <div className="text-center mb-8 mt-4">
-                <h2 className="text-5xl font-heading text-cta drop-shadow-[0_0_10px_rgba(249,115,22,0.3)]">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-heading text-cta drop-shadow-[0_0_10px_rgba(249,115,22,0.3)]">
                   {isLogin ? "Đăng Nhập Sạp" : "Mở Sạp Mới"}
                 </h2>
                 <p className="text-xs text-slate-400 font-retro uppercase tracking-wider mt-2">

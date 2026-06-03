@@ -86,7 +86,7 @@ func addXP(tx *sql.Tx, userID string, xpGained int) (int, int64, int64, error) {
 	for currentXP >= maxXP {
 		currentXP -= maxXP
 		level++
-		maxXP += 50
+		maxXP += int64(level) * 100
 	}
 
 	_, err = tx.Exec(`

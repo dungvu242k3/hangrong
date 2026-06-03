@@ -37,25 +37,25 @@ export default function QuestsPage() {
       <div className="space-y-8 select-none">
         
         {/* 1. Page Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-4 gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-4 gap-4">
           <div>
-            <h2 className="text-4xl font-bold font-heading text-slate-800 flex items-center gap-2">
-              <ClipboardList className="w-8 h-8 text-cta animate-float" /> Sổ Tay Nhiệm Vụ
+            <h2 className="text-sm md:text-lg font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
+              <ClipboardList className="w-7 h-7 text-cta animate-float" /> SỔ TAY NHIỆM VỤ
             </h2>
-            <p className="text-sm text-slate-500 font-semibold mt-1">
+            <p className="text-xs text-slate-400 font-semibold mt-2 font-body tracking-wider uppercase">
               Hoàn thành các mốc buôn bán vỉa hè để nhận thưởng Xu vàng và Kim cương quý.
             </p>
           </div>
 
           {completedCount > 0 && (
-            <div className="bg-gem/10 border border-gem/25 py-2.5 px-4 rounded-2xl text-xs font-bold text-gem flex items-center gap-2 animate-pulse">
-              <Sparkles className="w-4.5 h-4.5" /> Có {completedCount} phần thưởng đang đợi bạn nhận!
+            <div className="border-2 border-dashed border-gem/40 bg-gem/5 py-2px px-4 rounded-xl text-[10px] font-semibold text-gem flex items-center gap-2 animate-pulse font-retro">
+              <Sparkles className="w-4 h-4 text-gem" /> Có {completedCount} phần thưởng đang đợi bạn nhận!
             </div>
           )}
         </div>
 
         {/* 2. TAB TOGGLE */}
-        <div className="flex bg-slate-200/60 p-1.5 rounded-2xl max-w-sm">
+        <div className="flex bg-slate-950 border-2 border-slate-800 p-1.5 rounded-xl max-w-md font-retro text-xs">
           {[
             { id: "daily", label: "Nhiệm Vụ Hàng Ngày" },
             { id: "main", label: "Nhiệm Vụ Chính Tuyến" },
@@ -63,10 +63,10 @@ export default function QuestsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+              className={`flex-1 py-2.5 rounded-lg transition-all cursor-pointer font-bold ${
                 activeTab === tab.id
-                  ? "bg-white text-slate-800 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
+                  ? "bg-cta text-white shadow-retro-md"
+                  : "text-slate-400 hover:text-slate-200"
               }`}
             >
               {tab.label}
@@ -90,41 +90,41 @@ export default function QuestsPage() {
                       exit={{ opacity: 0, y: -15 }}
                       transition={{ delay: index * 0.05, type: "spring", damping: 25 }}
                       key={quest.id}
-                      className={`bg-white border-2 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 ${
+                      className={`border-4 border-double rounded-xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 ${
                         isReady
-                          ? "border-gem bg-gem/2 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                          ? "border-gem bg-slate-900 shadow-[0_0_15px_rgba(16,185,129,0.25)] hover:scale-101"
                           : quest.isClaimed
-                          ? "opacity-60 border-slate-200"
-                          : "border-slate-200 hover:border-slate-300"
+                          ? "bg-slate-950 border-slate-850 opacity-60"
+                          : "bg-slate-900 border-slate-700 hover:border-slate-600 hover:scale-101"
                       }`}
                     >
                       {/* Quest Info */}
                       <div className="flex-1 space-y-3 w-full">
-                        <div className="flex items-start justify-between md:justify-start gap-3">
+                        <div className="flex items-start justify-between md:justify-start gap-4">
                           <div>
-                            <h4 className="font-bold text-lg text-slate-800 leading-snug flex items-center gap-2">
+                            <h4 className="font-bold text-xs md:text-sm text-white font-retro leading-snug flex items-center gap-2">
                               {quest.isClaimed ? (
-                                <CheckCircle2 className="w-5 h-5 text-slate-400 shrink-0" />
+                                <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0" />
                               ) : isReady ? (
-                                <Sparkles className="w-5 h-5 text-gem animate-pulse shrink-0" />
+                                <Sparkles className="w-4 h-4 text-gem animate-pulse shrink-0" />
                               ) : (
-                                <Award className="w-5 h-5 text-cta shrink-0" />
+                                <Award className="w-4 h-4 text-cta shrink-0" />
                               )}
                               {quest.title}
                             </h4>
-                            <p className="text-xs text-slate-400 font-semibold mt-0.5">{quest.description}</p>
+                            <p className="text-xs text-slate-400 font-pixel mt-1.5">{quest.description}</p>
                           </div>
 
-                          <span className="bg-slate-100 border border-slate-200 text-slate-600 font-retro text-[9px] py-1 px-3 rounded-full shadow-xs">
+                          <span className="bg-slate-950 border border-slate-800 text-slate-300 font-retro text-xs py-1 px-3 rounded shadow-xs">
                             {quest.currentCount}/{quest.targetCount}
                           </span>
                         </div>
 
                         {/* Progress Bar */}
                         <div className="w-full space-y-1.5">
-                          <div className="w-full h-3 bg-slate-100 border border-slate-200/50 rounded-full overflow-hidden p-0.5 relative">
+                          <div className="w-full h-3 bg-slate-950 border border-slate-850 rounded-lg overflow-hidden p-0.5 relative">
                             <div
-                              className={`h-full rounded-full transition-all duration-500 ${
+                              className={`h-full rounded-sm transition-all duration-500 ${
                                 isReady
                                   ? "bg-gem shadow-[0_0_10px_rgba(16,185,129,0.5)]"
                                   : "bg-linear-to-r from-cta to-[#EAB308]"
@@ -136,24 +136,24 @@ export default function QuestsPage() {
                       </div>
 
                       {/* Reward Info & CTA Trigger */}
-                      <div className="flex items-center justify-between md:justify-end gap-5 w-full md:w-auto border-t md:border-t-0 border-slate-100 pt-3 md:pt-0">
+                      <div className="flex items-center justify-between md:justify-end gap-5 w-full md:w-auto border-t md:border-t-0 border-slate-800 pt-3 md:pt-0">
                         {/* Rewards badges */}
                         <div className="flex items-center gap-3">
                           {quest.rewardCoins > 0 && (
-                            <div className="flex items-center gap-1 bg-[#EAB308]/5 border border-[#EAB308]/20 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700">
-                              <span>💰</span> {quest.rewardCoins}
+                            <div className="flex items-center gap-1.5 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-350 font-pixel">
+                              <span>💰</span> <span className="font-retro text-xs text-coin">{quest.rewardCoins}</span>
                             </div>
                           )}
                           {quest.rewardGems > 0 && (
-                            <div className="flex items-center gap-1 bg-gem/5 border border-gem/20 px-3 py-1.5 rounded-xl text-xs font-bold text-[#10B981]">
-                              <span>💎</span> {quest.rewardGems}
+                            <div className="flex items-center gap-1.5 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-350 font-pixel">
+                              <span>💎</span> <span className="font-retro text-xs text-gem">{quest.rewardGems}</span>
                             </div>
                           )}
                         </div>
 
                         {/* CTA button */}
-                        {quest.isClaimed ? (
-                          <span className="bg-slate-100 border border-slate-200 text-slate-400 py-2.5 px-6 rounded-xl text-xs font-retro tracking-wide select-none min-h-[44px] flex items-center justify-center">
+                         {quest.isClaimed ? (
+                          <span className="bg-slate-950 border border-slate-800 text-slate-500 py-2.5 px-6 rounded-lg text-xs font-retro tracking-wide select-none min-h-[44px] flex items-center justify-center">
                             ĐÃ NHẬN
                           </span>
                         ) : isReady ? (
@@ -162,13 +162,13 @@ export default function QuestsPage() {
                             disabled={isClaimingReward}
                             variant="primary"
                             size="sm"
-                            className="font-retro text-[10px] tracking-wider py-2.5 px-6 min-h-[44px] shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-pulse"
+                            className="font-retro text-xs tracking-wider py-2.5 px-6 min-h-[44px] shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-pulse"
                           >
                             NHẬN THƯỞNG
                           </Button>
                         ) : (
-                          <span className="bg-slate-100 border border-slate-200 text-slate-500 py-2.5 px-6 rounded-xl text-xs font-retro tracking-wide flex items-center gap-1.5 select-none min-h-[44px]">
-                            <Lock className="w-3.5 h-3.5" /> CHƯA XONG
+                          <span className="bg-slate-950 border border-slate-850 text-slate-500 py-2.5 px-6 rounded-lg text-xs font-retro tracking-wide flex items-center gap-1.5 select-none min-h-[44px]">
+                            <Lock className="w-3 h-3" /> CHƯA XONG
                           </span>
                         )}
                       </div>
@@ -178,10 +178,10 @@ export default function QuestsPage() {
                 })}
               </div>
             ) : (
-              <div className="bg-white border-2 border-slate-200 border-dashed rounded-3xl p-12 text-center max-w-lg mx-auto font-body select-none">
-                <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-                <h4 className="text-xl font-bold text-slate-700 mb-1.5 font-heading">Trống rỗng!</h4>
-                <p className="text-slate-500 text-sm leading-relaxed font-semibold">
+              <div className="bg-slate-900 border-4 border-double border-slate-700 rounded-2xl p-12 text-center max-w-lg mx-auto font-body select-none">
+                <AlertCircle className="w-12 h-12 text-slate-500 mx-auto mb-4 animate-bounce" />
+                <h4 className="text-lg font-bold text-white mb-2 font-retro glow-cta">Trống rỗng!</h4>
+                <p className="text-slate-400 text-sm leading-relaxed font-semibold">
                   Hiện tại không có nhiệm vụ nào sẵn sàng trong danh mục này. Hãy quay lại sạp hàng buôn bán để kích hoạt nhé!
                 </p>
               </div>

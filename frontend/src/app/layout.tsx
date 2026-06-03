@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat, Quicksand, Press_Start_2P, VT323 } from "next/font/google";
+import { Caveat, Quicksand, Press_Start_2P, VT323, Chakra_Petch } from "next/font/google";
 import { Providers } from "@/shared/components/Providers";
 import "./globals.css";
 
@@ -17,7 +17,7 @@ const fontQuicksand = Quicksand({
 
 const fontPressStart = Press_Start_2P({
   variable: "--font-press-start",
-  subsets: ["latin"],
+  subsets: ["latin-ext", "latin"],
   weight: "400",
 });
 
@@ -25,6 +25,12 @@ const fontVT323 = VT323({
   variable: "--font-vt323",
   subsets: ["latin"],
   weight: "400",
+});
+
+const fontChakra = Chakra_Petch({
+  variable: "--font-chakra",
+  subsets: ["vietnamese", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -47,10 +53,11 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${fontCaveat.variable} ${fontQuicksand.variable} ${fontPressStart.variable} ${fontVT323.variable} h-full antialiased`}
+      className={`${fontCaveat.variable} ${fontQuicksand.variable} ${fontPressStart.variable} ${fontVT323.variable} ${fontChakra.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-body bg-[#F8FAFC] text-[#1E293B]">
+      <body className="min-h-full flex flex-col font-body bg-[#0F172A] text-slate-100">
         <Providers>
+
           {children}
         </Providers>
       </body>

@@ -308,8 +308,8 @@ func (s *SellingService) CollectSlot(userID, slotID string) (int64, int64, error
 		return 0, 0, err
 	}
 
-	// 5. Add XP (15 XP per collection)
-	_, _, _, err = addXP(tx, userID, 15)
+	// 5. Add XP (8 XP per collection)
+	_, _, _, err = addXP(tx, userID, 8)
 	if err != nil {
 		return 0, 0, err
 	}
