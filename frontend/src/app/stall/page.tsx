@@ -17,7 +17,7 @@ import { getProductVisual } from "@/shared/lib/productHelper";
 const StallSceneCanvas = dynamic(
   () => import("@/features/stall/components/StallSceneCanvas"),
   { ssr: false, loading: () => (
-    <div className="w-full aspect-video md:aspect-16/10 bg-slate-100 rounded-3xl animate-pulse flex items-center justify-center text-slate-400 font-semibold text-xs border-2 border-slate-200">
+    <div className="w-full aspect-video md:aspect-16/10 bg-slate-900 rounded-3xl animate-pulse flex items-center justify-center text-slate-400 font-semibold text-xs border-4 border-double border-slate-800">
       Đang tải động cơ vẽ 2D...
     </div>
   )}
@@ -181,12 +181,12 @@ export default function StallPage() {
         </div>
  
         {/* 1. Header and Quick Upgrade Panel */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-4 gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-4 gap-4">
           <div>
-            <h2 className="text-4xl font-bold font-heading text-slate-800 flex items-center gap-2">
+            <h2 className="text-4xl font-bold font-heading text-slate-100 flex items-center gap-2">
               <Store className="w-8 h-8 text-cta animate-float" /> Sạp Hàng Phố Cổ
             </h2>
-            <p className="text-sm text-slate-500 font-semibold mt-1">
+            <p className="text-sm text-slate-400 font-semibold mt-1">
               Phố Tạ Hiện nhộn nhịp. Hãy bày đồ ăn ra, thu hút khách hàng và thu tiền về gánh.
             </p>
           </div>
@@ -194,7 +194,7 @@ export default function StallPage() {
           <button
             onClick={handleUpgradeStall}
             disabled={isUpgrading}
-            className="flex items-center justify-between gap-3 bg-linear-to-br from-[#EAB308] to-cta hover:from-[#F59E0B] hover:to-[#EA580C] text-white py-2.5 px-4.5 rounded-2xl cursor-pointer transition-all shadow-retro-md hover:scale-103 font-body font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-between gap-3 bg-linear-to-br from-[#EAB308] to-cta hover:from-[#F59E0B] hover:to-[#EA580C] text-white py-2.5 px-4.5 rounded-2xl cursor-pointer transition-all shadow-retro-md hover:scale-103 font-body font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-cta/20"
           >
             <ArrowUpCircle className="w-5 h-5 animate-pulse" />
             <div className="text-left">
@@ -206,25 +206,31 @@ export default function StallPage() {
 
         {/* 2. CORE GAME CANVAS CONTAINER VIEWPORT */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-500 px-1">
-            <span className="flex items-center gap-1"><Info className="w-4 h-4 text-slate-400" /> Bấm trực tiếp vào các ô sạp tròn để bày hàng hoặc thu hoạch tiền xu.</span>
-            <span className="hidden md:inline bg-slate-200 border border-slate-300 py-1 px-3 rounded-full text-[10px] font-bold">PC aspect aspect-[16/10]</span>
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-1 select-none">
+            <span className="flex items-center gap-1"><Info className="w-4 h-4 text-slate-500" /> Bấm trực tiếp vào các ô sạp tròn để bày hàng hoặc thu hoạch tiền xu.</span>
+            <span className="hidden md:inline bg-slate-800 border border-slate-700 text-slate-300 py-1 px-3 rounded-full text-[10px] font-bold">Cabinet Mode [16/10]</span>
           </div>
-          <StallSceneCanvas />
+          <div className="retro-border-cta p-3 bg-slate-950 rounded-3xl glow-cta relative overflow-hidden shadow-2xl">
+            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-slate-900 border border-slate-700/80 rounded-full px-4 py-0.5 text-[8px] font-retro text-[#EAB308] z-20 opacity-80 uppercase tracking-widest">
+              ★ TẠ HIỆN ARCADE ★
+            </div>
+            <StallSceneCanvas />
+          </div>
         </div>
 
         {/* 3. QUICK ONBOARDING GUIDE SCREEN */}
-        <div className="bg-white border-2 border-slate-200 rounded-3xl p-5 shadow-sm font-body leading-normal flex items-start gap-4">
-          <div className="w-12 h-12 bg-cta/10 rounded-2xl flex items-center justify-center shrink-0">
+        <div className="glass-overlay retro-border rounded-3xl p-5 shadow-sm font-body leading-normal flex items-start gap-4">
+          <div className="w-12 h-12 bg-cta/10 rounded-2xl flex items-center justify-center shrink-0 border border-cta/20">
             <Award className="w-6 h-6 text-cta animate-float" />
           </div>
           <div>
-            <h4 className="font-bold text-base text-slate-800">Hướng dẫn nhanh cho chủ sạp mới:</h4>
-            <p className="text-sm text-slate-500 mt-1 font-semibold">
+            <h4 className="font-bold text-base text-slate-100">Hướng dẫn nhanh cho chủ sạp mới:</h4>
+            <p className="text-sm text-slate-400 mt-1 font-semibold leading-relaxed">
               Nhập bánh mì hoặc trà đá tại mục **&quot;Nhập hàng&quot;**, sau đó quay lại màn hình này, click vào ô tròn trống trên sạp để bày hàng. Đợi khách hàng đến ăn hết và click trực tiếp vào ô để thu xu lấp lánh về ví!
             </p>
           </div>
         </div>
+
 
         {/* 4. SLOT INVENTORY SELECTOR BOTTOM SHEET */}
         <BottomSheet
@@ -233,8 +239,8 @@ export default function StallPage() {
           title="Bày bán nguyên liệu lên sạp"
         >
           <div className="space-y-5 font-body">
-            <p className="text-sm font-semibold text-slate-500 leading-normal bg-slate-100 p-4 rounded-2xl flex items-start gap-2 border border-slate-200">
-              <Info className="w-5 h-5 text-slate-400 mt-0.5" />
+            <p className="text-sm font-semibold text-slate-300 leading-normal bg-slate-950 p-4 rounded-2xl flex items-start gap-2 border border-slate-850">
+              <Info className="w-5 h-5 text-slate-500 mt-0.5" />
               <span>{slotStatusText}</span>
             </p>
 
@@ -251,15 +257,15 @@ export default function StallPage() {
                         <div
                           key={item.id}
                           onClick={() => handlePlaceItem(item)}
-                          className="bg-white border-2 border-slate-200 hover:border-cta/40 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all duration-150 active:scale-99 hover:-translate-y-0.5 shadow-sm"
+                          className="bg-slate-900 border-4 border-double border-slate-700 hover:border-cta/60 hover:shadow-[0_0_15px_rgba(249,115,22,0.2)] rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all duration-150 active:scale-99 hover:-translate-y-0.5"
                         >
                           <div className="flex items-center gap-3">
                             <div className={`w-12 h-12 border rounded-xl flex items-center justify-center text-2.5xl ${getProductVisual(item.iconName).colorClass}`}>
                               {getProductVisual(item.iconName).emoji}
                             </div>
                             <div>
-                              <h4 className="font-bold text-base text-slate-800">{item.name}</h4>
-                              <p className="text-xs text-slate-400 font-semibold mt-0.5">Thời gian bán: {duration} giây</p>
+                              <h4 className="font-bold text-base text-white">{item.name}</h4>
+                              <p className="text-xs text-slate-350 font-semibold mt-0.5">Thời gian bán: {duration} giây</p>
                             </div>
                           </div>
 
@@ -271,9 +277,9 @@ export default function StallPage() {
                     })}
                 </div>
               ) : (
-                <div className="text-center p-6 border border-slate-200 border-dashed rounded-2xl">
-                  <ShieldAlert className="w-10 h-10 text-slate-400 mx-auto mb-2" />
-                  <p className="text-slate-500 text-sm font-semibold mb-3">Kho đồ của bạn đang không có sẵn sản phẩm nào để bày bán.</p>
+                <div className="text-center p-6 border border-slate-800 border-dashed rounded-2xl">
+                  <ShieldAlert className="w-10 h-10 text-slate-500 mx-auto mb-2" />
+                  <p className="text-slate-450 text-sm font-semibold mb-3">Kho đồ của bạn đang không có sẵn sản phẩm nào để bày bán.</p>
                   <Button
                     onClick={() => (window.location.href = "/import-goods")}
                     variant="primary"

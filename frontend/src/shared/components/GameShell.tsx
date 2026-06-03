@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Store, Package, Import, Users, ClipboardList, Settings, Volume2, VolumeX } from "lucide-react";
 import { useUiStore } from "@/shared/stores/uiStore";
 import { CoinBadge } from "./CoinBadge";
@@ -15,7 +15,6 @@ interface GameShellProps {
 }
 
 export const GameShell: React.FC<GameShellProps> = ({ children }) => {
-  const router = useRouter();
   const pathname = usePathname();
   
   // Real dynamic player profile state
@@ -43,9 +42,9 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-body text-slate-800 relative selection:bg-cta selection:text-white pb-[76px] md:pb-0 md:pl-64">
+    <div className="min-h-screen bg-[#0F172A] flex flex-col font-body text-slate-100 relative selection:bg-cta selection:text-white pb-[76px] md:pb-0 md:pl-64 crt-overlay">
       {/* 1. TOP BAR (HUD) */}
-      <header className="sticky top-0 z-30 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 py-3.5 px-4 md:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3 shadow-sm select-none">
+      <header className="sticky top-0 z-30 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 py-3.5 px-4 md:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3 shadow-md select-none">
         {/* Left Side: Avatar & Level */}
         <div className="flex items-center justify-between md:justify-start gap-4">
           <LevelProgress
@@ -57,7 +56,7 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
           {/* Sound Control for quick toggle */}
           <button
             onClick={toggleSound}
-            className="p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl cursor-pointer transition-all md:hidden"
+            className="p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl cursor-pointer transition-all md:hidden"
             aria-label="Tắt/Bật nhạc"
           >
             {soundEnabled ? <Volume2 className="w-4 h-4 text-cta" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
@@ -72,13 +71,14 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
           {/* Desktop Sound HUD */}
           <button
             onClick={toggleSound}
-            className="hidden md:block p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl cursor-pointer transition-all hover:scale-105"
+            className="hidden md:block p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl cursor-pointer transition-all hover:scale-105"
             aria-label="Tắt/Bật nhạc"
           >
             {soundEnabled ? <Volume2 className="w-4.5 h-4.5 text-cta" /> : <VolumeX className="w-4.5 h-4.5 text-slate-400" />}
           </button>
         </div>
       </header>
+
 
       {/* 2. SIDEBAR NAVIGATION FOR DESKTOP */}
       <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 bg-slate-900 text-slate-200 border-r border-slate-800 flex-col z-40">
@@ -133,7 +133,7 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
       </main>
 
       {/* 4. BOTTOM NAVIGATION FOR MOBILE DEVICES */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] px-2 py-2 flex justify-around items-center select-none">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 shadow-[0_-4px_12px_rgba(0,0,0,0.1)] px-2 py-2 flex justify-around items-center select-none">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.path;
@@ -148,14 +148,14 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
                 className={`p-1.5 rounded-xl transition-all duration-200 ${
                   isActive
                     ? "bg-cta text-white shadow-retro-md scale-105"
-                    : "text-slate-400 group-hover:text-cta group-hover:bg-slate-100"
+                    : "text-slate-400 group-hover:text-cta group-hover:bg-slate-800"
                 }`}
               >
                 <Icon className="w-5 h-5" />
               </span>
               <span
                 className={`text-[10px] font-bold tracking-tight transition-colors duration-200 ${
-                  isActive ? "text-cta" : "text-slate-500"
+                  isActive ? "text-cta" : "text-slate-400"
                 }`}
               >
                 {item.name}
@@ -164,6 +164,7 @@ export const GameShell: React.FC<GameShellProps> = ({ children }) => {
           );
         })}
       </nav>
+
     </div>
   );
 };

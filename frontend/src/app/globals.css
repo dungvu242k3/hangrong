@@ -7,8 +7,8 @@
   --color-primary: #3B82F6;
   --color-secondary: #60A5FA;
   --color-cta: #F97316;
-  --color-background: #F8FAFC;
-  --color-text: #1E293B;
+  --color-background: #0F172A;
+  --color-text: #F1F5F9;
   
   --color-coin: #EAB308;
   --color-gem: #10B981;
@@ -26,6 +26,7 @@
   --glow-coin: 0 0 20px rgba(234, 179, 8, 0.6);
 }
 
+
 @theme {
   --color-primary: var(--color-primary);
   --color-secondary: var(--color-secondary);
@@ -35,8 +36,8 @@
   --color-coin: var(--color-coin);
   --color-gem: var(--color-gem);
 
-  --font-heading: var(--font-caveat), cursive;
-  --font-body: var(--font-quicksand), sans-serif;
+  --font-heading: var(--font-press-start), monospace;
+  --font-body: var(--font-vt323), monospace;
   --font-retro: var(--font-press-start), monospace;
   --font-pixel: var(--font-vt323), monospace;
 
@@ -49,34 +50,57 @@
 body {
   background-color: var(--color-background);
   color: var(--color-text);
-  font-family: var(--font-quicksand), sans-serif;
+  font-family: var(--font-body);
 }
 
 /* Heading styles */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-caveat), cursive;
+  font-family: var(--font-heading);
 }
 
-/* Premium Glassmorphic Overlay */
+/* Premium Glassmorphic Overlay for Dark Mode */
 .glass-overlay {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(30, 41, 59, 0.1);
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Retro Cabinet and Card Borders */
+.retro-border {
+  border: 4px double rgba(255, 255, 255, 0.2);
+}
+
+.retro-border-cta {
+  border: 4px double var(--color-cta);
+}
+
+.retro-border-gem {
+  border: 4px double var(--color-gem);
+}
+
+/* Neon Glow Effects */
+.glow-cta {
+  text-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+}
+
+.glow-gem {
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
 }
 
 /* CRT Scanline Game Overlays */
 .crt-overlay {
   position: relative;
-  overflow: hidden;
 }
 .crt-overlay::before {
   content: " ";
   display: block;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%), 
-              linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-  z-index: 10;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.015), rgba(0, 0, 255, 0.03));
+  z-index: 40;
   background-size: 100% 4px, 6px 100%;
   pointer-events: none;
 }
@@ -90,3 +114,13 @@ h1, h2, h3, h4, h5, h6 {
 .animate-float {
   animation: coin-float 2s ease-in-out infinite;
 }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+

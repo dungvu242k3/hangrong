@@ -49,8 +49,9 @@ export default function RootLayout({
       lang="vi"
       className={`${fontCaveat.variable} ${fontQuicksand.variable} ${fontPressStart.variable} ${fontVT323.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-body bg-[#F8FAFC] text-[#1E293B]">
+      <body className="min-h-full flex flex-col font-body bg-[#0F172A] text-slate-100">
         <Providers>
+
           {children}
         </Providers>
       </body>
