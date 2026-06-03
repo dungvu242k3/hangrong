@@ -87,7 +87,10 @@ export const apiClient = async <T = unknown>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> => {
-  const url = endpoint.startsWith("http") ? endpoint : `${BASE_URL}${endpoint}`;
+  const cleanBaseUrl = BASE_URL.endsWith("/") ? BASE_URL.slice(0, -1) : BASE_URL;
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = endpoint.startsWith("http") ? endpoint : `${cleanBaseUrl}${cleanEndpoint}`;
+
   
   const headers = new Headers(options.headers || {});
   if (!headers.has("Content-Type")) {
