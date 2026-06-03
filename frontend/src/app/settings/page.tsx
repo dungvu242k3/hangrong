@@ -118,13 +118,15 @@ export default function SettingsPage() {
 
               {/* Action Buttons */}
               <div className="border-t border-slate-100 pt-5 flex justify-end gap-3">
-                <Button
+                <button
                   onClick={logout}
-                  variant="ghost"
-                  className="bg-red-500 hover:bg-red-600 text-white hover:text-white font-retro text-[10px] tracking-wider py-3 px-6 shadow-sm flex items-center gap-2 cursor-pointer"
+                  className="inline-flex items-center justify-center font-semibold rounded-2xl transition-all duration-200 active:scale-[0.98] cursor-pointer select-none bg-red-500 hover:bg-red-600 text-white font-retro text-[10px] tracking-wider py-3 px-6 shadow-md hover:shadow-lg gap-2 border-2 border-transparent"
                 >
+
+
                   <LogOut className="w-4 h-4" /> ĐĂNG XUẤT TÀI KHOẢN
-                </Button>
+                </button>
+
 
               </div>
             </div>
