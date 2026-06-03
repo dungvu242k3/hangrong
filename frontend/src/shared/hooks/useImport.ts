@@ -25,9 +25,17 @@ export const useImport = () => {
       if (!res.success) throw new Error(res.error?.message || "Không thể tải đơn hàng");
       return res.data || [];
     },
-    refetchInterval: 5000, // Poll every 5 seconds to sync countdowns if user keeps tab inactive
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (data && Array.isArray(data) && data.some((order) => order.status === "pending")) {
+        return 5000; // Poll every 5s only if there are pending orders
+      }
+      return false; // Disable polling if there are no pending orders
+    },
     staleTime: 2000,
   });
+
+
 
   // 3. Mutation: Trigger placing an import order
   const importProductMutation = useMutation<
