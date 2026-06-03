@@ -70,15 +70,31 @@ export const useAuth = () => {
     router.push("/login");
   };
 
+  const translateError = (message: string | undefined): string | null => {
+    if (!message) return null;
+    const msg = message.toLowerCase();
+    if (msg.includes("conflict") || msg.includes("already exist") || msg.includes("đã tồn tại")) {
+      return "Tên tài khoản hoặc địa chỉ email này đã được sử dụng. Vui lòng chọn tên khác!";
+    }
+    if (msg.includes("invalid credentials") || msg.includes("unauthorized") || msg.includes("không chính xác") || msg.includes("session")) {
+      return "Tên đăng nhập hoặc mật khẩu sạp hàng không chính xác.";
+    }
+    if (msg.includes("network_error") || msg.includes("failed to fetch") || msg.includes("kết nối")) {
+      return "Không thể kết nối đến máy chủ. Vui lòng thử lại sau vài giây (Render có thể đang khởi động).";
+    }
+    return message;
+  };
+
   return {
     login: loginMutation.mutate,
     isLoadingLogin: loginMutation.isPending,
-    loginError: loginMutation.data?.success === false ? loginMutation.data.error?.message : null,
+    loginError: translateError(loginMutation.data?.success === false ? loginMutation.data.error?.message : undefined),
     
     register: registerMutation.mutate,
     isLoadingRegister: registerMutation.isPending,
-    registerError: registerMutation.data?.success === false ? registerMutation.data.error?.message : null,
+    registerError: translateError(registerMutation.data?.success === false ? registerMutation.data.error?.message : undefined),
     
     logout,
   };
 };
+

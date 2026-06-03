@@ -69,10 +69,15 @@ func (h *Handler) register(w http.ResponseWriter, r *http.Request) {
 
 	tokens, err := h.service.Register(strings.TrimSpace(req.Username), strings.TrimSpace(req.Email), req.Password)
 	if err != nil {
+		if errors.Is(err, ErrConflict) {
+			shared.WriteError(w, r, http.StatusConflict, "CONFLICT", "Tên tài khoản hoặc email đã tồn tại.")
+			return
+		}
 		h.writeServiceError(w, r, err)
 		return
 	}
 	shared.WriteJSON(w, r, http.StatusCreated, tokens)
+
 }
 
 func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
