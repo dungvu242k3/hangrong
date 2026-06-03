@@ -133,6 +133,7 @@ export default function StallPage() {
               name: item.name,
               iconName: item.iconName,
               durationSeconds: duration,
+              coinsReward: item.sellPrice,
             });
 
             setIsSlotSheetOpen(false);

@@ -10,6 +10,7 @@ export interface GameEvents {
     name: string;
     iconName: string;
     durationSeconds: number;
+    coinsReward: number;
   }) => void;
   "react:collect_all": () => void;
   "react:sync_slots": (data: { slots: Partial<StallSlot>[]; stallLevel: number }) => void;

@@ -306,7 +306,7 @@ export class StallScene {
   }
 
   // Place product action (React calls this via emitter)
-  public placeProduct(slotId: string, name: string, iconName: string, durationSeconds: number) {
+  public placeProduct(slotId: string, name: string, iconName: string, durationSeconds: number, coinsReward: number) {
     const slot = this.slots.find((s) => s.id === slotId);
     if (!slot) return;
 
@@ -316,7 +316,7 @@ export class StallScene {
     slot.totalTime = durationSeconds;
     slot.timeRemaining = durationSeconds;
     slot.isReadyToCollect = false;
-    slot.coinsReward = 150 + Math.floor(Math.random() * 80); // random mock reward
+    slot.coinsReward = coinsReward;
 
     this.updateSlotVisual(slot);
   }
@@ -582,17 +582,41 @@ export class StallScene {
   // Listen to events from React side
   private setupEventListeners() {
     gameEmitter.on("react:place_product", (data) => {
-      this.placeProduct(data.slotId, data.name, data.iconName, data.durationSeconds);
+      this.placeProduct(data.slotId, data.name, data.iconName, data.durationSeconds, data.coinsReward);
     });
 
     gameEmitter.on("react:sync_slots", (data: { slots: Partial<SlotData>[], stallLevel: number }) => {
       this.stallLevel = data.stallLevel;
       this.drawStallTable();
-      data.slots.forEach((newSlot, idx) => {
-        if (idx < this.slots.length) {
-          this.slots[idx] = { ...this.slots[idx], ...newSlot };
-          this.updateSlotVisual(this.slots[idx]);
-        }
+      
+      const numSlots = data.slots.length;
+      let xPositions = [220, 400, 580];
+      if (numSlots === 4) {
+        xPositions = [170, 320, 470, 620];
+      } else if (numSlots === 5) {
+        xPositions = [140, 270, 400, 530, 660];
+      }
+
+      this.slots = data.slots.map((newSlot, idx) => {
+        const x = xPositions[idx] || (220 + idx * 100);
+        return {
+          id: newSlot.id || `slot${idx + 1}`,
+          x: x,
+          y: 380,
+          productId: newSlot.productId || null,
+          productName: newSlot.productName || null,
+          productIcon: newSlot.productIcon || null,
+          timeRemaining: newSlot.timeRemaining || 0,
+          totalTime: newSlot.totalTime || 0,
+          isReadyToCollect: newSlot.isReadyToCollect || false,
+          coinsReward: newSlot.coinsReward || 0,
+        };
+      });
+
+      this.drawSlots();
+
+      this.slots.forEach((slot) => {
+        this.updateSlotVisual(slot);
       });
     });
 
