@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	_ "github.com/lib/pq"
 
@@ -29,10 +30,18 @@ func main() {
 		_ = db.Close()
 	}()
 
+	// Configure database connection pool to allow idle connections to close
+	// so that Neon PostgreSQL can automatically suspend after 5 minutes of inactivity.
+	db.SetMaxOpenConns(8)
+	db.SetMaxIdleConns(2)
+	db.SetConnMaxLifetime(10 * time.Minute)
+	db.SetConnMaxIdleTime(2 * time.Minute)
+
 	if err := db.Ping(); err != nil {
 		log.Fatalf("failed to ping database: %v", err)
 	}
 	log.Println("✅ Database connection established successfully!")
+
 
 	svc := game.NewService(db)
 	router := server.NewRouter(svc, cfg)
