@@ -36,10 +36,10 @@
   --color-coin: var(--color-coin);
   --color-gem: var(--color-gem);
 
-  --font-heading: var(--font-press-start), monospace;
-  --font-body: var(--font-vt323), monospace;
-  --font-retro: var(--font-press-start), monospace;
-  --font-pixel: var(--font-vt323), monospace;
+  --font-heading: var(--font-quicksand), sans-serif;
+  --font-body: var(--font-quicksand), sans-serif;
+  --font-retro: var(--font-chakra), var(--font-press-start), sans-serif;
+  --font-pixel: var(--font-chakra), var(--font-vt323), sans-serif;
 
   --shadow-retro-md: var(--shadow-md);
   --shadow-retro-lg: var(--shadow-lg);
@@ -53,9 +53,34 @@ body {
   font-family: var(--font-body);
 }
 
-/* Heading styles */
+/* Optimize wide retro font display & prevent overflow */
+.font-retro, [class*="font-retro"], .font-heading, [class*="font-heading"], h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.05em; /* Compress spacing so it fits better */
+  line-height: 1.4; /* Adequate line height to prevent Vietnamese diacritics overlapping vertically */
+  word-break: break-word; /* Prevent overflowing horizontally */
+}
+
+/* Heading styles with Press Start 2P scaled down to fit containers */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+}
+
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; }
+h4 { font-size: 0.95rem; }
+h5 { font-size: 0.8rem; }
+h6 { font-size: 0.7rem; }
+
+/* Mobile font scale-down utility to prevent wrapping of wide text */
+@media (max-width: 768px) {
+  .font-retro, [class*="font-retro"] {
+    font-size: 0.85em; /* Scale down retro fonts globally on small screens */
+  }
+  h1 { font-size: 1.3rem; }
+  h2 { font-size: 1.05rem; }
+  h3 { font-size: 0.9rem; }
+  h4 { font-size: 0.8rem; }
 }
 
 /* Premium Glassmorphic Overlay for Dark Mode */

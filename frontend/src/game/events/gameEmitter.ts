@@ -30,6 +30,7 @@ export interface GameEvents {
   "game:coin_collected": (data: { slotId: string; amount: number }) => void;
   "game:xp_gained": (data: { amount: number }) => void;
   "game:tutorial_trigger": (step: number) => void;
+  "game:ready": () => void;
 }
 
 class GameEventEmitter extends EventEmitter<GameEvents> {

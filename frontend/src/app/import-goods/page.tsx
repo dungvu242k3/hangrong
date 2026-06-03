@@ -12,12 +12,18 @@ import { getProductVisual } from "@/shared/lib/productHelper";
 
 // Fallback products data if catalog is loading
 const STREET_PRODUCTS: Product[] = [
-  { id: "p1", name: "Bánh Mì Pate", category: "food", importPrice: 80, sellPrice: 150, timeSeconds: 60, levelRequired: 1, iconName: "🥖", color: "bg-amber-100 border-amber-300" },
-  { id: "p2", name: "Trà Đá Vỉa Hè", category: "drink", importPrice: 20, sellPrice: 50, timeSeconds: 30, levelRequired: 1, iconName: "🍵", color: "bg-teal-100 border-teal-300" },
-  { id: "p3", name: "Bánh Tráng Trộn", category: "food", importPrice: 150, sellPrice: 300, timeSeconds: 120, levelRequired: 2, iconName: "🥗", color: "bg-orange-100 border-orange-300" },
-  { id: "p4", name: "Nước Mía Siêu Sạch", category: "drink", importPrice: 60, sellPrice: 130, timeSeconds: 90, levelRequired: 2, iconName: "🍹", color: "bg-emerald-100 border-emerald-300" },
-  { id: "p5", name: "Bắp Nướng Mỡ Hành", category: "food", importPrice: 200, sellPrice: 420, timeSeconds: 180, levelRequired: 3, iconName: "🌽", color: "bg-yellow-100 border-yellow-300" },
-  { id: "p6", name: "Cà Phê Sữa Đá", category: "drink", importPrice: 100, sellPrice: 220, timeSeconds: 150, levelRequired: 3, iconName: "☕", color: "bg-yellow-900/10 border-yellow-600/30" },
+  { id: "p1", name: "Bánh mì", category: "food", importPrice: 50, sellPrice: 90, timeSeconds: 20, levelRequired: 1, iconName: "sandwich", color: "bg-amber-100 border-amber-300" },
+  { id: "p2", name: "Trà đá", category: "drink", importPrice: 25, sellPrice: 45, timeSeconds: 15, levelRequired: 1, iconName: "cup-soda", color: "bg-teal-100 border-teal-300" },
+  { id: "p3", name: "Hướng dương", category: "food", importPrice: 35, sellPrice: 60, timeSeconds: 25, levelRequired: 1, iconName: "flower", color: "bg-yellow-100 border-yellow-300" },
+  { id: "p4", name: "Bánh cuốn", category: "food", importPrice: 85, sellPrice: 140, timeSeconds: 35, levelRequired: 2, iconName: "scroll", color: "bg-indigo-100 border-indigo-300" },
+  { id: "p5", name: "Tàu hũ nóng", category: "drink", importPrice: 70, sellPrice: 120, timeSeconds: 30, levelRequired: 2, iconName: "soup", color: "bg-rose-100 border-rose-300" },
+  { id: "p6", name: "Tò he", category: "toy", importPrice: 120, sellPrice: 210, timeSeconds: 45, levelRequired: 3, iconName: "toy-brick", color: "bg-emerald-100 border-emerald-300" },
+  { id: "p7", name: "Nem chua rán", category: "food", importPrice: 180, sellPrice: 350, timeSeconds: 80, levelRequired: 4, iconName: "bento", color: "bg-rose-100 border-rose-300" },
+  { id: "p8", name: "Yogurt nếp cẩm", category: "drink", importPrice: 130, sellPrice: 270, timeSeconds: 70, levelRequired: 5, iconName: "wine", color: "bg-indigo-100 border-indigo-300" },
+  { id: "p9", name: "Xôi xéo thơm dẻo", category: "food", importPrice: 250, sellPrice: 520, timeSeconds: 150, levelRequired: 6, iconName: "bowl", color: "bg-amber-100 border-amber-300" },
+  { id: "p10", name: "Sấu đá phố cổ", category: "drink", importPrice: 100, sellPrice: 220, timeSeconds: 60, levelRequired: 7, iconName: "glass", color: "bg-green-100 border-green-300" },
+  { id: "p11", name: "Bắp nướng mỡ hành", category: "food", importPrice: 300, sellPrice: 650, timeSeconds: 180, levelRequired: 8, iconName: "lollipop", color: "bg-yellow-100 border-yellow-300" },
+  { id: "p12", name: "Phở gánh Hà Nội", category: "food", importPrice: 500, sellPrice: 1100, timeSeconds: 240, levelRequired: 10, iconName: "ramen", color: "bg-red-100 border-red-300" },
 ];
 
 export default function ImportGoodsPage() {
@@ -106,7 +112,7 @@ export default function ImportGoodsPage() {
         {/* 1. Page Header description */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-4 gap-4">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
+            <h2 className="text-sm md:text-lg font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
               <Import className="w-7 h-7 text-cta animate-float" /> NHẬP HÀNG VỀ KHO
             </h2>
             <p className="text-xs text-slate-400 font-semibold mt-2 font-body tracking-wider uppercase">
@@ -114,7 +120,7 @@ export default function ImportGoodsPage() {
             </p>
           </div>
           
-          <div className="border-2 border-dashed border-primary/40 bg-primary/5 py-2px px-4 rounded-xl text-[10px] font-semibold text-primary flex items-center gap-2">
+          <div className="border-2 border-dashed border-primary/40 bg-primary/5 py-2px px-4 rounded-xl text-xs font-semibold text-primary flex items-center gap-2">
             <Flame className="w-4 h-4 text-cta" /> Đơn hàng về sẽ tự động xếp vào Kho đồ chính.
           </div>
         </div>
@@ -122,7 +128,7 @@ export default function ImportGoodsPage() {
         {/* 2. ACTIVE IMPORTS VIEWPORT (CRITICAL ORDER BLOCK) */}
         {activeOrders.length > 0 && (
           <div className="bg-slate-950 text-slate-200 border-4 border-double border-slate-700 rounded-2xl p-6 shadow-md relative overflow-hidden crt-overlay">
-            <h3 className="font-retro text-[10px] text-[#EAB308] uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h3 className="font-retro text-xs text-[#EAB308] uppercase tracking-wider mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#EAB308] animate-spin" style={{ animationDuration: "3s" }} /> 
               Xe Hàng Đang Về ({activeOrders.length})
             </h3>
@@ -146,11 +152,11 @@ export default function ImportGoodsPage() {
                       </div>
                       
                       {isReady ? (
-                        <span className="bg-gem/10 border border-gem/30 text-gem py-1 px-3.5 rounded-lg text-[9px] font-retro flex items-center gap-1">
+                        <span className="bg-gem/10 border border-gem/30 text-gem py-1 px-3.5 rounded-lg text-xs font-retro flex items-center gap-1">
                           <CheckCircle className="w-3.5 h-3.5" /> Hàng đã về!
                         </span>
                       ) : (
-                        <span className="text-[#EAB308] text-[9px] font-retro flex items-center gap-1">
+                        <span className="text-[#EAB308] text-xs font-retro flex items-center gap-1">
                           {order.timeRemaining} giây
                         </span>
                       )}
@@ -162,7 +168,7 @@ export default function ImportGoodsPage() {
                         onClick={() => handleClaimOrder(order.id)}
                         variant="primary"
                         size="sm"
-                        className="w-full font-retro text-[9px] tracking-wider py-2.5"
+                        className="w-full font-retro text-xs tracking-wider py-2.5"
                       >
                         XẾP VÀO KHO
                       </Button>
@@ -194,27 +200,22 @@ export default function ImportGoodsPage() {
                   key={product.id}
                   onClick={() => handleOpenSheet(product)}
                   className={`bg-slate-900 border-4 border-double rounded-xl p-5 relative flex flex-col justify-between gap-4 select-none ${
-                    isLocked ? "opacity-60 cursor-not-allowed border-slate-800" : "hover:border-cta/60 hover:shadow-[0_0_15px_rgba(249,115,22,0.2)] border-slate-700 transition-all hover:scale-103"
+                    isLocked ? "opacity-80 cursor-not-allowed border-slate-800" : "hover:border-cta/60 hover:shadow-[0_0_15px_rgba(249,115,22,0.2)] border-slate-700 transition-all hover:scale-103"
                   }`}
                 >
-                  {/* Lock HUD for restricted items */}
-                  {isLocked && (
-                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px] rounded-lg flex flex-col items-center justify-center z-10 text-slate-300">
-                      <ShieldAlert className="w-8 h-8 text-slate-500 mb-2" />
-                      <span className="font-bold text-[9px] font-retro uppercase tracking-wider bg-slate-800 py-1.5 px-3.5 rounded-lg border border-slate-750">
-                        Cấp {product.levelRequired} Mở khóa
-                      </span>
-                    </div>
-                  )}
-
                   {/* Header info */}
                   <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 bg-slate-950 border-4 border-double border-slate-800 rounded-lg flex items-center justify-center text-3.5xl shadow-inner transition-transform duration-200 group-hover:scale-110">
+                    <div className="w-14 h-14 bg-slate-950 border-4 border-double border-slate-800 rounded-lg flex items-center justify-center text-3.5xl shadow-inner transition-transform duration-200 group-hover:scale-110 relative">
                       {getProductVisual(product.iconName).emoji}
+                      {isLocked && (
+                        <div className="absolute -top-1.5 -right-1.5 bg-slate-850 border border-slate-700 rounded-lg p-0.5 shadow-md flex items-center justify-center">
+                          <ShieldAlert className="w-3.5 h-3.5 text-[#EAB308]" />
+                        </div>
+                      )}
                     </div>
                     <div>
                       <h4 className="font-bold text-xl text-white font-pixel leading-tight">{product.name}</h4>
-                      <span className="bg-slate-800 border border-slate-700 text-slate-400 font-retro text-[9px] py-0.5 px-2 rounded mt-1.5 inline-block uppercase">
+                      <span className="bg-slate-800 border border-slate-700 text-slate-400 font-retro text-xs py-0.5 px-2 rounded mt-1.5 inline-block uppercase">
                         {product.category === "food" ? "Đồ Ăn" : product.category === "drink" ? "Đồ Uống" : "Đồ Chơi"}
                       </span>
                     </div>
@@ -224,7 +225,7 @@ export default function ImportGoodsPage() {
                   <div className="grid grid-cols-2 gap-2 border-t border-b border-slate-800 py-3 text-xs font-pixel text-slate-400">
                     <div>
                       <p className="text-slate-500">Giá nhập:</p>
-                      <p className="font-bold text-coin font-retro text-[10px] mt-1 flex items-center gap-1">
+                      <p className="font-bold text-coin font-retro text-xs mt-1 flex items-center gap-1">
                         {product.importPrice} Xu
                       </p>
                     </div>
@@ -234,21 +235,27 @@ export default function ImportGoodsPage() {
                         <Clock className="w-4 h-4 text-slate-500" /> {product.timeSeconds}s
                       </p>
                     </div>
-                    <div className="col-span-2 mt-1.5 flex items-center justify-between text-[10px] font-retro bg-emerald-950/30 text-gem py-1.5 px-3 rounded-lg border border-gem/20">
+                    <div className="col-span-2 mt-1.5 flex items-center justify-between text-xs font-retro bg-emerald-950/30 text-gem py-1.5 px-3 rounded-lg border border-gem/20">
                       <span className="flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5" /> Lãi ròng / chiếc:</span>
                       <span className="font-bold text-gem">+{product.sellPrice - product.importPrice} Xu</span>
                     </div>
                   </div>
 
-                  {/* Import Button */}
-                  <Button
-                    onClick={() => {}} // Controlled by outer Card onClick
-                    disabled={isLocked}
-                    variant={isLocked ? "ghost" : "secondary"}
-                    className="w-full text-[9px] font-retro py-2.5"
-                  >
-                    NHẬP HÀNG
-                  </Button>
+                  {/* Import/Lock Button */}
+                  {isLocked ? (
+                    <div className="w-full text-xs font-retro py-2.5 bg-slate-950 border border-slate-850 text-slate-400 rounded-lg flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider">
+                      <ShieldAlert className="w-3.5 h-3.5 text-[#EAB308] animate-pulse" /> Cấp {product.levelRequired} Mở khóa
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => {}} // Controlled by outer Card onClick
+                      disabled={isLocked}
+                      variant="secondary"
+                      className="w-full text-xs font-retro py-2.5"
+                    >
+                      NHẬP HÀNG
+                    </Button>
+                  )}
                 </div>
               );
             })}
@@ -284,7 +291,7 @@ export default function ImportGoodsPage() {
                   >
                     -
                   </button>
-                  <span className="text-xl font-black text-white font-retro">{quantity} cái</span>
+                  <span className="text-sm md:text-base font-black text-white font-retro">{quantity} cái</span>
                   <button
                     onClick={() => setQuantity((q) => Math.min(q + 10, 100))}
                     className="w-12 h-12 bg-slate-800 hover:bg-slate-700 rounded-lg cursor-pointer font-bold text-xl flex items-center justify-center text-white active:scale-95 transition-all"

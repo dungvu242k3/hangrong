@@ -44,10 +44,10 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 INSERT INTO products
   (code, name, category, unlock_level, import_price, sell_price, import_duration_seconds, base_sell_duration_seconds, icon_name, color)
 VALUES
-  ('BANH_MI', 'Banh mi', 'food', 1, 50, 90, 20, 20, 'sandwich', '#F97316'),
-  ('TRA_DA', 'Tra da', 'drink', 1, 25, 45, 15, 15, 'cup-soda', '#14B8A6'),
-  ('HUONG_DUONG', 'Huong duong', 'food', 1, 35, 60, 25, 25, 'flower', '#EAB308'),
-  ('BANH_CUON', 'Banh cuon', 'food', 2, 85, 140, 35, 35, 'scroll', '#A855F7'),
-  ('TAU_HU', 'Tau hu nong', 'drink', 2, 70, 120, 30, 30, 'soup', '#F43F5E'),
-  ('TO_HE', 'To he', 'toy', 3, 120, 210, 45, 45, 'toy-brick', '#22C55E')
+  ('BANH_MI', 'Bánh mì', 'food', 1, 50, 90, 20, 20, 'sandwich', '#F97316'),
+  ('TRA_DA', 'Trà đá', 'drink', 1, 25, 45, 15, 15, 'cup-soda', '#14B8A6'),
+  ('HUONG_DUONG', 'Hướng dương', 'food', 1, 35, 60, 25, 25, 'flower', '#EAB308'),
+  ('BANH_CUON', 'Bánh cuốn', 'food', 2, 85, 140, 35, 35, 'scroll', '#A855F7'),
+  ('TAU_HU', 'Tàu hũ nóng', 'drink', 2, 70, 120, 30, 30, 'soup', '#F43F5E'),
+  ('TO_HE', 'Tò he', 'toy', 3, 120, 210, 45, 45, 'toy-brick', '#22C55E')
 ON CONFLICT (code) DO NOTHING;

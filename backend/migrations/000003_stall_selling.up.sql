@@ -1,7 +1,7 @@
 CREATE TABLE stalls (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  name VARCHAR(64) NOT NULL DEFAULT 'Ganh hang nho',
+  name VARCHAR(64) NOT NULL DEFAULT 'Gánh hàng nhỏ',
   level INT NOT NULL DEFAULT 1 CHECK (level >= 1),
   storage_level INT NOT NULL DEFAULT 1 CHECK (storage_level >= 1),
   cleanliness INT NOT NULL DEFAULT 100 CHECK (cleanliness >= 0 AND cleanliness <= 100),

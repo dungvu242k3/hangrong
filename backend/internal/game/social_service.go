@@ -15,9 +15,9 @@ func NewSocialService(db *sql.DB) *SocialService {
 func (s *SocialService) Friends() []Friend {
 	// Return the default mock friends to maintain the offline single-player neighbor gameplay
 	return []Friend{
-		{ID: "friend-lan", Username: "co-lan", Level: 4, Coins: 1840, StallName: "Sap Co Lan", CanHelp: true, CanPrank: true},
-		{ID: "friend-nam", Username: "anh-nam", Level: 3, Coins: 1210, StallName: "Banh Mi Anh Nam", CanHelp: true, CanPrank: false},
-		{ID: "friend-ha", Username: "be-ha", Level: 5, Coins: 2450, StallName: "Tra Da Be Ha", CanHelp: false, CanPrank: true},
+		{ID: "friend-lan", Username: "co-lan", Level: 4, Coins: 1840, StallName: "Sạp Cô Lan", CanHelp: true, CanPrank: true},
+		{ID: "friend-nam", Username: "anh-nam", Level: 3, Coins: 1210, StallName: "Bánh Mì Anh Nam", CanHelp: true, CanPrank: false},
+		{ID: "friend-ha", Username: "be-ha", Level: 5, Coins: 2450, StallName: "Trà Đá Bé Hà", CanHelp: false, CanPrank: true},
 	}
 }
 
@@ -43,7 +43,7 @@ func (s *SocialService) NeighborSlots(neighborID string) ([]StallSlot, error) {
 	if err != nil {
 		// Fallback values
 		pID = "banh-mi"
-		pName = "Banh mi"
+		pName = "Bánh mì"
 		pIcon = "sandwich"
 		pPrice = 90
 	}
@@ -85,9 +85,9 @@ func (s *SocialService) NeighborAction(userID, neighborID, action string) (int, 
 		return 0, ErrNotFound
 	}
 
-	gained := 10
+	gained := 5
 	if action == "prank" {
-		gained = 6
+		gained = 3
 	}
 
 	tx, err := s.db.Begin()

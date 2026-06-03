@@ -143,7 +143,8 @@ foreach ($migration in $migrations) {
     throw "Could not check migration $($migration.Name)."
   }
 
-  if (($isApplied | Select-Object -First 1).Trim() -eq "1") {
+  $firstRow = ($isApplied | Select-Object -First 1)
+  if ($null -ne $firstRow -and $firstRow.Trim() -eq "1") {
     Write-Host "Skipping $($migration.Name)"
     continue
   }

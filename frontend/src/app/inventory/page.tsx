@@ -78,7 +78,7 @@ export default function InventoryPage() {
         {/* 1. Page Header description */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-4 gap-4">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
+            <h2 className="text-sm md:text-lg font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
               <Package className="w-7 h-7 text-cta animate-float" /> KHO ĐỒ CỦA BẠN
             </h2>
             <p className="text-xs text-slate-400 font-semibold mt-2 font-body tracking-wider uppercase">
@@ -92,7 +92,7 @@ export default function InventoryPage() {
         </div>
 
         {/* 2. CATEGORY TABS */}
-        <div className="flex bg-slate-950 border-2 border-slate-800 p-1 rounded-xl max-w-md font-retro text-[9px]">
+        <div className="flex bg-slate-950 border-2 border-slate-800 p-1 rounded-xl max-w-md font-retro text-xs">
           {[
             { id: "all", label: "Tất cả" },
             { id: "food", label: "Đồ Ăn" },
@@ -134,7 +134,7 @@ export default function InventoryPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-xl text-white font-pixel leading-tight">{item.name}</h4>
-                    <span className="bg-slate-800 border border-slate-700 text-slate-400 font-retro text-[9px] py-0.5 px-2 rounded mt-1.5 inline-block uppercase">
+                    <span className="bg-slate-800 border border-slate-700 text-slate-400 font-retro text-xs py-0.5 px-2 rounded mt-1.5 inline-block uppercase">
                       {item.category === "food" ? "Đồ Ăn" : item.category === "drink" ? "Đồ Uống" : "Đồ Chơi"}
                     </span>
                   </div>
@@ -144,13 +144,13 @@ export default function InventoryPage() {
                 <div className="bg-slate-950 border border-slate-800 rounded-xl p-3.5 grid grid-cols-2 gap-2 text-xs font-semibold font-pixel text-slate-400">
                   <div>
                     <p className="text-slate-500">Giá bán sạp:</p>
-                    <p className="font-bold text-coin font-retro text-[10px] mt-1">
+                    <p className="font-bold text-coin font-retro text-xs mt-1">
                       {item.sellPrice} Xu
                     </p>
                   </div>
                   <div>
                     <p className="text-slate-500">Thanh lý nhanh:</p>
-                    <p className="font-bold text-slate-300 font-retro text-[10px] mt-1">
+                    <p className="font-bold text-slate-300 font-retro text-xs mt-1">
                       {item.fastSellPrice} Xu
                     </p>
                   </div>
@@ -162,7 +162,7 @@ export default function InventoryPage() {
                     onClick={() => {}} // Controlled by outer Card onClick
                     variant="primary"
                     size="sm"
-                    className="flex-1 text-[9px] font-retro tracking-wider py-2.5"
+                    className="flex-1 text-xs font-retro tracking-wider py-2.5"
                   >
                     BÀY BÁN
                   </Button>
@@ -180,7 +180,7 @@ export default function InventoryPage() {
             <Button
               onClick={() => (window.location.href = "/import-goods")}
               variant="primary"
-              className="px-6 py-2.5 text-[10px] font-retro tracking-wider"
+              className="px-6 py-2.5 text-xs font-retro tracking-wider"
             >
               ĐI NHẬP HÀNG NGAY
             </Button>
@@ -225,7 +225,7 @@ export default function InventoryPage() {
                   onClick={handlePlaceOnStall}
                   variant="primary"
                   fullWidth
-                  className="py-3.5 font-retro text-[10px] tracking-wider"
+                  className="py-3.5 font-retro text-xs tracking-wider"
                 >
                   BÀY BÁN NGAY LÊN SẠP
                 </Button>
@@ -278,7 +278,7 @@ export default function InventoryPage() {
                   onClick={handleFastSellSubmit}
                   variant="secondary"
                   fullWidth
-                  className="py-3.5 font-retro text-[10px] tracking-wider mt-4"
+                  className="py-3.5 font-retro text-xs tracking-wider mt-4"
                 >
                   XÁC NHẬN THANH LÝ
                 </Button>

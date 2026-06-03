@@ -25,19 +25,25 @@ const StallSceneCanvas = dynamic(
 
 // Fallback inventory items if warehouse query is loading or empty
 const FALLBACK_INVENTORY: InventoryItem[] = [
-  { id: "i1", productId: "p1", name: "Bánh Mì Pate", category: "food", quantity: 15, sellPrice: 150, fastSellPrice: 100, iconName: "🥖", color: "bg-amber-100 border-amber-300", description: "" },
-  { id: "i2", productId: "p2", name: "Trà Đá Vỉa Hè", category: "drink", quantity: 42, sellPrice: 50, fastSellPrice: 35, iconName: "🍵", color: "bg-teal-100 border-teal-300", description: "" },
-  { id: "i3", productId: "p3", name: "Bánh Tráng Trộn", category: "food", quantity: 6, sellPrice: 300, fastSellPrice: 200, iconName: "🥗", color: "bg-orange-100 border-orange-300", description: "" },
+  { id: "i1", productId: "p1", name: "Bánh mì", category: "food", quantity: 15, sellPrice: 90, fastSellPrice: 50, iconName: "sandwich", color: "bg-amber-100 border-amber-300", description: "" },
+  { id: "i2", productId: "p2", name: "Trà đá", category: "drink", quantity: 42, sellPrice: 45, fastSellPrice: 25, iconName: "cup-soda", color: "bg-teal-100 border-teal-300", description: "" },
+  { id: "i3", productId: "p3", name: "Hướng dương", category: "food", quantity: 6, sellPrice: 60, fastSellPrice: 35, iconName: "flower", color: "bg-yellow-100 border-yellow-300", description: "" },
 ];
 
 const getProductDuration = (productId: string): number => {
   const durations: Record<string, number> = {
-    p1: 60,
-    p2: 30,
-    p3: 120,
-    p4: 90,
-    p5: 180,
-    p6: 150,
+    p1: 20, // Bánh mì
+    p2: 15, // Trà đá
+    p3: 25, // Hướng dương
+    p4: 35, // Bánh cuốn
+    p5: 30, // Tàu hũ nóng
+    p6: 45, // Tò he
+    p7: 80, // Nem chua rán
+    p8: 70, // Yogurt nếp cẩm
+    p9: 150, // Xôi xéo
+    p10: 60, // Sấu đá
+    p11: 180, // Bắp nướng
+    p12: 240, // Phở gánh
   };
   return durations[productId] || 60;
 };
@@ -67,9 +73,23 @@ export default function StallPage() {
 
   // Sync slots database values with PixiJS canvas on load or update
   useEffect(() => {
+    // 1. Sync immediately if canvas is already loaded
     if (slots && slots.length > 0) {
       gameEmitter.emit("react:sync_slots", { slots, stallLevel: level });
     }
+
+    // 2. Sync when game canvas signals it's ready (resolves race condition on first load/restart)
+    const handleGameReady = () => {
+      if (slots && slots.length > 0) {
+        gameEmitter.emit("react:sync_slots", { slots, stallLevel: level });
+      }
+    };
+
+    gameEmitter.on("game:ready", handleGameReady);
+
+    return () => {
+      gameEmitter.off("game:ready", handleGameReady);
+    };
   }, [slots, level]);
 
   // Hook gameEmitter listeners
@@ -125,7 +145,8 @@ export default function StallPage() {
       {
         onSuccess: (res) => {
           if (res.success && res.data) {
-            const duration = getProductDuration(item.productId);
+            // Read duration dynamically from backend response, supporting infinite products
+            const duration = res.data.slot.totalTime || getProductDuration(item.productId);
             // Sync with PixiJS canvas app drawing state
             gameEmitter.emit("react:place_product", {
               slotId: targetSlotId,
@@ -183,7 +204,7 @@ export default function StallPage() {
         {/* 1. Header and Quick Upgrade Panel */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-4 gap-4">
           <div>
-            <h2 className="text-4xl font-bold font-heading text-slate-100 flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-bold font-heading text-slate-100 flex items-center gap-2">
               <Store className="w-8 h-8 text-cta animate-float" /> Sạp Hàng Phố Cổ
             </h2>
             <p className="text-sm text-slate-400 font-semibold mt-1">
@@ -208,7 +229,6 @@ export default function StallPage() {
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs font-semibold text-slate-400 px-1 select-none">
             <span className="flex items-center gap-1"><Info className="w-4 h-4 text-slate-500" /> Bấm trực tiếp vào các ô sạp tròn để bày hàng hoặc thu hoạch tiền xu.</span>
-            <span className="hidden md:inline bg-slate-800 border border-slate-700 text-slate-300 py-1 px-3 rounded-full text-[10px] font-bold">Cabinet Mode [16/10]</span>
           </div>
           <div className="retro-border-cta p-3 bg-slate-950 rounded-3xl glow-cta relative overflow-hidden shadow-2xl">
             <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-slate-900 border border-slate-700/80 rounded-full px-4 py-0.5 text-[8px] font-retro text-[#EAB308] z-20 opacity-80 uppercase tracking-widest">
@@ -284,7 +304,7 @@ export default function StallPage() {
                     onClick={() => (window.location.href = "/import-goods")}
                     variant="primary"
                     size="sm"
-                    className="font-retro text-[9px]"
+                    className="font-retro text-xs"
                   >
                     ĐI NHẬP HÀNG NGAY
                   </Button>

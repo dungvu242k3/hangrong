@@ -49,7 +49,7 @@ export default function SettingsPage() {
         
         {/* 1. Page Header */}
         <div className="border-b border-slate-800 pb-4">
-          <h2 className="text-4xl font-bold font-heading text-slate-100 flex items-center gap-2">
+          <h2 className="text-xl md:text-2xl font-bold font-heading text-slate-100 flex items-center gap-2">
             <Settings className="w-8 h-8 text-cta animate-spin-slow" /> Cấu Hình Trò Chơi
           </h2>
           <p className="text-sm text-slate-400 font-semibold mt-1">
@@ -71,7 +71,7 @@ export default function SettingsPage() {
               {player ? (
                 <div className="space-y-5">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-linear-to-tr from-cta to-[#EAB308] flex items-center justify-center text-white text-2xl font-retro shadow-md shrink-0">
+                    <div className="w-16 h-16 rounded-2xl bg-linear-to-tr from-cta to-[#EAB308] flex items-center justify-center text-white text-sm font-retro shadow-md shrink-0">
                       Lv.{player.level}
                     </div>
                     <div className="space-y-1">

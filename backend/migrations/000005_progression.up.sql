@@ -65,7 +65,7 @@ ON CONFLICT (upgrade_type, target_level) DO NOTHING;
 
 INSERT INTO quests (code, title, description, quest_type, target_type, target_value, reward)
 VALUES
-  ('DAILY_IMPORT_3', 'Nhap hang dau ngay', 'Nhap 3 mon hang bat ky.', 'daily', 'IMPORT_PRODUCT', 3, '{"coins": 120, "gems": 0}'),
-  ('DAILY_COLLECT_2', 'Thu tien ban hang', 'Thu tien tu sap 2 lan.', 'daily', 'COLLECT_REVENUE', 2, '{"coins": 180, "gems": 1}'),
-  ('MAIN_UPGRADE_STALL', 'Nang cap sap', 'Nang cap sap hang len cap moi.', 'main', 'UPGRADE_STALL', 1, '{"coins": 300, "gems": 2}')
+  ('DAILY_IMPORT_3', 'Nhập hàng đầu ngày', 'Nhập 3 món hàng bất kỳ.', 'daily', 'IMPORT_PRODUCT', 3, '{"coins": 120, "gems": 0}'),
+  ('DAILY_COLLECT_2', 'Thu tiền bán hàng', 'Thu tiền từ sạp 2 lần.', 'daily', 'COLLECT_REVENUE', 2, '{"coins": 180, "gems": 1}'),
+  ('MAIN_UPGRADE_STALL', 'Nâng cấp sạp', 'Nâng cấp sạp hàng lên cấp mới.', 'main', 'UPGRADE_STALL', 1, '{"coins": 300, "gems": 2}')
 ON CONFLICT (code) DO NOTHING;

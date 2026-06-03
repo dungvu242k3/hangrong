@@ -39,7 +39,7 @@ export default function QuestsPage() {
         {/* 1. Page Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-4 gap-4">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
+            <h2 className="text-sm md:text-lg font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
               <ClipboardList className="w-7 h-7 text-cta animate-float" /> SỔ TAY NHIỆM VỤ
             </h2>
             <p className="text-xs text-slate-400 font-semibold mt-2 font-body tracking-wider uppercase">
@@ -55,7 +55,7 @@ export default function QuestsPage() {
         </div>
 
         {/* 2. TAB TOGGLE */}
-        <div className="flex bg-slate-950 border-2 border-slate-800 p-1.5 rounded-xl max-w-md font-retro text-[9px]">
+        <div className="flex bg-slate-950 border-2 border-slate-800 p-1.5 rounded-xl max-w-md font-retro text-xs">
           {[
             { id: "daily", label: "Nhiệm Vụ Hàng Ngày" },
             { id: "main", label: "Nhiệm Vụ Chính Tuyến" },
@@ -102,7 +102,7 @@ export default function QuestsPage() {
                       <div className="flex-1 space-y-3 w-full">
                         <div className="flex items-start justify-between md:justify-start gap-4">
                           <div>
-                            <h4 className="font-bold text-sm text-white font-retro leading-snug flex items-center gap-2">
+                            <h4 className="font-bold text-xs md:text-sm text-white font-retro leading-snug flex items-center gap-2">
                               {quest.isClaimed ? (
                                 <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0" />
                               ) : isReady ? (
@@ -115,7 +115,7 @@ export default function QuestsPage() {
                             <p className="text-xs text-slate-400 font-pixel mt-1.5">{quest.description}</p>
                           </div>
 
-                          <span className="bg-slate-950 border border-slate-800 text-slate-300 font-retro text-[9px] py-1 px-3 rounded shadow-xs">
+                          <span className="bg-slate-950 border border-slate-800 text-slate-300 font-retro text-xs py-1 px-3 rounded shadow-xs">
                             {quest.currentCount}/{quest.targetCount}
                           </span>
                         </div>
@@ -141,19 +141,19 @@ export default function QuestsPage() {
                         <div className="flex items-center gap-3">
                           {quest.rewardCoins > 0 && (
                             <div className="flex items-center gap-1.5 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-350 font-pixel">
-                              <span>💰</span> <span className="font-retro text-[10px] text-coin">{quest.rewardCoins}</span>
+                              <span>💰</span> <span className="font-retro text-xs text-coin">{quest.rewardCoins}</span>
                             </div>
                           )}
                           {quest.rewardGems > 0 && (
                             <div className="flex items-center gap-1.5 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-350 font-pixel">
-                              <span>💎</span> <span className="font-retro text-[10px] text-gem">{quest.rewardGems}</span>
+                              <span>💎</span> <span className="font-retro text-xs text-gem">{quest.rewardGems}</span>
                             </div>
                           )}
                         </div>
 
                         {/* CTA button */}
-                        {quest.isClaimed ? (
-                          <span className="bg-slate-950 border border-slate-800 text-slate-500 py-2.5 px-6 rounded-lg text-[9px] font-retro tracking-wide select-none min-h-[44px] flex items-center justify-center">
+                         {quest.isClaimed ? (
+                          <span className="bg-slate-950 border border-slate-800 text-slate-500 py-2.5 px-6 rounded-lg text-xs font-retro tracking-wide select-none min-h-[44px] flex items-center justify-center">
                             ĐÃ NHẬN
                           </span>
                         ) : isReady ? (
@@ -162,12 +162,12 @@ export default function QuestsPage() {
                             disabled={isClaimingReward}
                             variant="primary"
                             size="sm"
-                            className="font-retro text-[9px] tracking-wider py-2.5 px-6 min-h-[44px] shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-pulse"
+                            className="font-retro text-xs tracking-wider py-2.5 px-6 min-h-[44px] shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-pulse"
                           >
                             NHẬN THƯỞNG
                           </Button>
                         ) : (
-                          <span className="bg-slate-950 border border-slate-850 text-slate-500 py-2.5 px-6 rounded-lg text-[9px] font-retro tracking-wide flex items-center gap-1.5 select-none min-h-[44px]">
+                          <span className="bg-slate-950 border border-slate-850 text-slate-500 py-2.5 px-6 rounded-lg text-xs font-retro tracking-wide flex items-center gap-1.5 select-none min-h-[44px]">
                             <Lock className="w-3 h-3" /> CHƯA XONG
                           </span>
                         )}

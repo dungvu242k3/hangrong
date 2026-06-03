@@ -24,9 +24,9 @@ export const LevelProgress: React.FC<LevelProgressProps> = ({
 
       {/* Progress Track */}
       <div className="grow flex flex-col justify-center min-w-[100px]">
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
-          <span className="text-slate-600">Cấp sạp</span>
-          <span>
+        <div className="flex items-center justify-between text-xs font-bold text-white mb-1">
+          <span className="text-slate-100">Cấp sạp</span>
+          <span className="text-slate-200">
             {currentXp}/{maxXp} EXP
           </span>
         </div>

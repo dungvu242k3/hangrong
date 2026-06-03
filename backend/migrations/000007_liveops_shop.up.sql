@@ -75,8 +75,8 @@ ON shop_purchases(user_id, created_at DESC);
 
 INSERT INTO decorations (code, name, decoration_type, rarity, price_coins, effect)
 VALUES
-  ('SIGN_BASIC', 'Bang hieu go', 'sign', 'common', 100, '{"decoration_score": 5}'),
-  ('CHAIR_PLASTIC_RED', 'Ghe nhua do', 'chair', 'common', 80, '{"decoration_score": 3}'),
-  ('LIGHT_STRING', 'Day den nho', 'light', 'rare', 350, '{"decoration_score": 12}'),
-  ('STALL_SKIN_BLUE_TARP', 'Bat xanh via he', 'stall_skin', 'rare', 500, '{"decoration_score": 18}')
+  ('SIGN_BASIC', 'Bảng hiệu gỗ', 'sign', 'common', 100, '{"decoration_score": 5}'),
+  ('CHAIR_PLASTIC_RED', 'Ghế nhựa đỏ', 'chair', 'common', 80, '{"decoration_score": 3}'),
+  ('LIGHT_STRING', 'Dây đèn nhỏ', 'light', 'rare', 350, '{"decoration_score": 12}'),
+  ('STALL_SKIN_BLUE_TARP', 'Bạt xanh vỉa hè', 'stall_skin', 'rare', 500, '{"decoration_score": 18}')
 ON CONFLICT (code) DO NOTHING;

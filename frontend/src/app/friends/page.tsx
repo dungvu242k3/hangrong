@@ -98,16 +98,24 @@ export default function FriendsPage() {
 
   // Sync slots to neighbor canvas once loaded or changed
   useEffect(() => {
-    if (activeFriend && activeSlots && !isNeighborLoading) {
-      // Small timeout to let Pixi canvas initialize first
-      const timer = setTimeout(() => {
+    const doSync = () => {
+      if (activeFriend && activeSlots && !isNeighborLoading) {
         gameEmitter.emit("react:sync_slots", {
           slots: activeSlots,
           stallLevel: activeFriend.level,
         });
-      }, 500);
-      return () => clearTimeout(timer);
-    }
+      }
+    };
+
+    // 1. Sync immediately if canvas is already loaded
+    doSync();
+
+    // 2. Sync when game canvas signals it's ready (resolves race condition on slow load)
+    gameEmitter.on("game:ready", doSync);
+
+    return () => {
+      gameEmitter.off("game:ready", doSync);
+    };
   }, [activeFriend, activeSlots, isNeighborLoading]);
 
   // Show custom toast HUD alert
@@ -210,7 +218,7 @@ export default function FriendsPage() {
               {/* Page header */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-4 gap-4">
                 <div>
-                  <h2 className="text-xl md:text-2xl font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
+                  <h2 className="text-sm md:text-lg font-bold font-retro text-white flex items-center gap-3 tracking-tight glow-cta">
                     <Users className="w-7 h-7 text-cta animate-float" /> BẠN BÈ HÀNG XÓM
                   </h2>
                   <p className="text-xs text-slate-400 font-semibold mt-2 font-body tracking-wider uppercase">
