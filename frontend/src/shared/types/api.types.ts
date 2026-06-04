@@ -81,3 +81,27 @@ export interface Friend {
   canHelp: boolean;
   canPrank: boolean;
 }
+
+export interface Shipper {
+  id: string;
+  userId: string;
+  shipperIndex: number;
+  level: number;
+  status: "idle" | "delivering";
+  busyUntil: string | null;
+  capacity: number;
+  slots: number;
+  speedMultiplier: number;
+}
+
+export interface DeliveryOrder {
+  id: string;
+  userId: string;
+  shipperId?: string | null;
+  items: Record<string, number>;
+  rewardCoins: number;
+  rewardXp: number;
+  deliveryTimeSeconds: number;
+  difficulty: "easy" | "medium" | "hard";
+  status: "pending" | "delivering";
+}

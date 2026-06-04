@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Store, ShieldAlert, Award, ArrowUpCircle, Flame, Info } from "lucide-react";
+import { Store, ShieldAlert, Award, ArrowUpCircle, Flame, Info, Truck } from "lucide-react";
 import { GameShell } from "@/shared/components/GameShell";
 import { BottomSheet } from "@/shared/components/BottomSheet";
 import { Button } from "@/shared/components/Button";
@@ -10,6 +10,8 @@ import { gameEmitter } from "@/game/events/gameEmitter";
 import { useStall } from "@/shared/hooks/useStall";
 import { usePlayer } from "@/shared/hooks/usePlayer";
 import { useInventory } from "@/shared/hooks/useInventory";
+import { useDelivery } from "@/shared/hooks/useDelivery";
+import { DeliveryDialog } from "@/features/stall/components/DeliveryDialog";
 import { InventoryItem } from "@/shared/types/api.types";
 import { getProductVisual } from "@/shared/lib/productHelper";
 
@@ -52,18 +54,31 @@ export default function StallPage() {
   const { slots, placeProduct, collectCoins, upgradeStall, isUpgrading } = useStall();
   const { player } = usePlayer(true);
   const { inventoryItems } = useInventory();
+  const { shippers } = useDelivery();
 
   // Player levels and currencies
   const level = player?.stallLevel ?? 1;
   const coins = player?.coins ?? 0;
+  const playerLevel = player?.level ?? 1;
 
   // Selector sheets
   const [isSlotSheetOpen, setIsSlotSheetOpen] = useState(false);
+  const [isDeliveryDialogOpen, setIsDeliveryDialogOpen] = useState(false);
   const [targetSlotId, setTargetSlotId] = useState<string | null>(null);
   const [slotStatusText, setSlotStatusText] = useState("");
   
   // Custom toast notification floating HUD
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Keep track of current time dynamically to avoid impure render calls
+  const [nowTick, setNowTick] = useState(() => Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowTick(Date.now());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Show floating HUD notification
   const showToast = (msg: string) => {
@@ -310,6 +325,32 @@ export default function StallPage() {
             </div>
           </div>
         </BottomSheet>
+
+        {/* Floating Delivery Orders HUD Trigger */}
+        {playerLevel >= 30 && (
+          <div className="fixed bottom-6 right-6 z-40">
+            <button
+              onClick={() => setIsDeliveryDialogOpen(true)}
+              className="w-14 h-14 bg-linear-to-br from-[#EAB308] to-cta hover:from-[#F59E0B] hover:to-[#EA580C] text-white rounded-full shadow-2xl flex items-center justify-center border-2 border-white/20 active:scale-95 transition-all hover:scale-105 cursor-pointer relative"
+              title="Điều hành giao hàng"
+            >
+              <Truck className="w-7 h-7" />
+              
+              {/* Notification Badge */}
+              {shippers.some((sh) => sh.status === "delivering" && sh.busyUntil && new Date(sh.busyUntil).getTime() < nowTick) && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 border-2 border-slate-900 rounded-full flex items-center justify-center text-[9px] font-retro font-bold text-white shadow-md animate-pulse">
+                  !
+                </span>
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* Delivery Management Dialog Overlay */}
+        <DeliveryDialog
+          isOpen={isDeliveryDialogOpen}
+          onClose={() => setIsDeliveryDialogOpen(false)}
+        />
       </div>
     </GameShell>
   );
