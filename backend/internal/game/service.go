@@ -12,6 +12,7 @@ type Service struct {
 	Stall        *StallService
 	Quest        *QuestService
 	Social       *SocialService
+	Delivery     *DeliveryService
 }
 
 func NewService(db *sql.DB) *Service {
@@ -25,6 +26,7 @@ func NewService(db *sql.DB) *Service {
 		Stall:        NewStallService(db),
 		Quest:        NewQuestService(db),
 		Social:       NewSocialService(db),
+		Delivery:     NewDeliveryService(db),
 	}
 	return svc
 }
@@ -111,4 +113,28 @@ func (s *Service) NeighborSlots(neighborID string) ([]StallSlot, error) {
 
 func (s *Service) NeighborAction(userID, neighborID, action string) (int, error) {
 	return s.Social.NeighborAction(userID, neighborID, action)
+}
+
+func (s *Service) Shippers(userID string) ([]Shipper, error) {
+	return s.Delivery.Shippers(userID)
+}
+
+func (s *Service) DeliveryOrders(userID string) ([]DeliveryOrder, error) {
+	return s.Delivery.ActiveOrders(userID)
+}
+
+func (s *Service) DeliverOrders(userID, shipperID string, orderIDs []string) error {
+	return s.Delivery.Deliver(userID, shipperID, orderIDs)
+}
+
+func (s *Service) ClaimShipper(userID, shipperID string) (int64, int64, int, int64, int64, error) {
+	return s.Delivery.ClaimReward(userID, shipperID)
+}
+
+func (s *Service) UpgradeShipper(userID, shipperID string) (Shipper, int64, error) {
+	return s.Delivery.UpgradeShipper(userID, shipperID)
+}
+
+func (s *Service) InstantCompleteShipper(userID, shipperID string) (int64, error) {
+	return s.Delivery.InstantComplete(userID, shipperID)
 }

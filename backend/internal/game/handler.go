@@ -28,6 +28,12 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 
 	mux.HandleFunc("GET /api/player/profile", h.withAuth(h.profile))
 	mux.HandleFunc("GET /api/auth/me", h.withAuth(h.profile))
+	mux.HandleFunc("GET /api/delivery/orders", h.withAuth(h.deliveryOrders))
+	mux.HandleFunc("GET /api/delivery/shippers", h.withAuth(h.shippers))
+	mux.HandleFunc("POST /api/delivery/shippers/{id}/deliver", h.withAuth(h.deliverOrders))
+	mux.HandleFunc("POST /api/delivery/shippers/{id}/claim", h.withAuth(h.claimShipper))
+	mux.HandleFunc("POST /api/delivery/shippers/{id}/upgrade", h.withAuth(h.upgradeShipper))
+	mux.HandleFunc("POST /api/delivery/shippers/{id}/instant-complete", h.withAuth(h.instantCompleteShipper))
 	mux.HandleFunc("GET /api/products", h.withAuth(h.products))
 	mux.HandleFunc("GET /api/products/unlocked", h.withAuth(h.products))
 	mux.HandleFunc("GET /api/import-orders", h.withAuth(h.importOrders))
@@ -319,6 +325,8 @@ func (h *Handler) writeServiceError(w http.ResponseWriter, r *http.Request, err 
 		shared.WriteError(w, r, http.StatusConflict, "CONFLICT", "Action conflicts with current state.")
 	case errors.Is(err, ErrInsufficientCoins):
 		shared.WriteError(w, r, http.StatusBadRequest, "INSUFFICIENT_COINS", "Not enough coins.")
+	case errors.Is(err, ErrInsufficientGems):
+		shared.WriteError(w, r, http.StatusBadRequest, "INSUFFICIENT_GEMS", "Not enough gems.")
 	case errors.Is(err, ErrInsufficientStock):
 		shared.WriteError(w, r, http.StatusBadRequest, "INVENTORY_NOT_ENOUGH", "Not enough inventory.")
 	case errors.Is(err, ErrNotReady):
@@ -326,4 +334,84 @@ func (h *Handler) writeServiceError(w http.ResponseWriter, r *http.Request, err 
 	default:
 		shared.WriteError(w, r, http.StatusInternalServerError, "INTERNAL_ERROR", "Unexpected server error.")
 	}
+}
+
+func (h *Handler) shippers(w http.ResponseWriter, r *http.Request, userID string) {
+	shippers, err := h.service.Shippers(userID)
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, shippers)
+}
+
+func (h *Handler) deliveryOrders(w http.ResponseWriter, r *http.Request, userID string) {
+	orders, err := h.service.DeliveryOrders(userID)
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, orders)
+}
+
+func (h *Handler) deliverOrders(w http.ResponseWriter, r *http.Request, userID string) {
+	var req struct {
+		OrderIDs []string `json:"orderIds"`
+	}
+	if err := shared.DecodeJSON(r, &req); err != nil {
+		shared.WriteError(w, r, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid JSON body.")
+		return
+	}
+
+	shipperID := r.PathValue("id")
+	err := h.service.DeliverOrders(userID, shipperID, req.OrderIDs)
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, map[string]bool{"success": true})
+}
+
+func (h *Handler) claimShipper(w http.ResponseWriter, r *http.Request, userID string) {
+	shipperID := r.PathValue("id")
+	coinsGained, xpGained, newLevel, newCoins, newGems, err := h.service.ClaimShipper(userID, shipperID)
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, map[string]any{
+		"success": true,
+		"coinsGained": coinsGained,
+		"xpGained": xpGained,
+		"newLevel": newLevel,
+		"newCoins": newCoins,
+		"newGems": newGems,
+	})
+}
+
+func (h *Handler) upgradeShipper(w http.ResponseWriter, r *http.Request, userID string) {
+	shipperID := r.PathValue("id")
+	shipper, newCoins, err := h.service.UpgradeShipper(userID, shipperID)
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, map[string]any{
+		"success": true,
+		"shipper": shipper,
+		"newCoins": newCoins,
+	})
+}
+
+func (h *Handler) instantCompleteShipper(w http.ResponseWriter, r *http.Request, userID string) {
+	shipperID := r.PathValue("id")
+	newGems, err := h.service.InstantCompleteShipper(userID, shipperID)
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, map[string]any{
+		"success": true,
+		"newGems": newGems,
+	})
 }

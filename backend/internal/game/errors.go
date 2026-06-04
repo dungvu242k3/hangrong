@@ -11,4 +11,5 @@ var (
 	ErrInsufficientStock = errors.New("insufficient stock")
 	ErrNotReady          = errors.New("not ready")
 	ErrForbidden         = errors.New("forbidden")
+	ErrInsufficientGems  = errors.New("insufficient gems")
 )

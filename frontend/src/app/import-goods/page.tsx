@@ -38,6 +38,7 @@ export default function ImportGoodsPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(10);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"tahien" | "hotay" | "congtruong">("tahien");
   
   // Local active orders state with 1s ticking intervals
   const [activeOrders, setActiveOrders] = useState<ImportOrder[]>([]);
@@ -70,6 +71,16 @@ export default function ImportGoodsPage() {
 
   // Display catalog products with system values or fallback
   const catalogProducts = products.length > 0 ? products : STREET_PRODUCTS;
+
+  const filteredProducts = catalogProducts.filter((product) => {
+    if (activeTab === "tahien") {
+      return product.levelRequired < 20;
+    } else if (activeTab === "hotay") {
+      return product.levelRequired >= 20 && product.levelRequired < 30;
+    } else {
+      return product.levelRequired >= 30;
+    }
+  });
 
   // Calculation helpers
   const totalCost = selectedProduct ? selectedProduct.importPrice * quantity : 0;
@@ -127,7 +138,7 @@ export default function ImportGoodsPage() {
 
         {/* 2. ACTIVE IMPORTS VIEWPORT (CRITICAL ORDER BLOCK) */}
         {activeOrders.length > 0 && (
-          <div className="bg-slate-950 text-slate-200 border-4 border-double border-slate-700 rounded-2xl p-6 shadow-md relative overflow-hidden crt-overlay">
+          <div className="bg-slate-950 text-slate-200 border-4 border-double border-slate-700 rounded-2xl p-6 shadow-md relative overflow-hidden">
             <h3 className="font-retro text-xs text-[#EAB308] uppercase tracking-wider mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#EAB308] animate-spin" style={{ animationDuration: "3s" }} /> 
               Xe Hàng Đang Về ({activeOrders.length})
@@ -188,11 +199,65 @@ export default function ImportGoodsPage() {
         )}
 
         {/* 3. PRODUCT CATALOG GRID */}
-        <div>
-          <h3 className="text-sm font-bold font-retro text-slate-350 mb-4 tracking-wider uppercase">Danh mục nguyên liệu hệ thống</h3>
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800/60 pb-5">
+            <h3 className="text-sm font-bold font-retro text-slate-300 tracking-wider uppercase">Danh mục nguyên liệu hệ thống</h3>
+            
+            <div className="flex bg-slate-950/80 border border-slate-800/80 gap-1 p-1 rounded-xl w-full md:w-auto max-w-md">
+              <button
+                onClick={() => setActiveTab("tahien")}
+                className={`flex-1 md:flex-none py-2 px-4 rounded-lg font-retro text-[10px] font-bold transition-all text-center cursor-pointer ${
+                  activeTab === "tahien"
+                    ? "bg-cta text-white shadow-md shadow-cta/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                }`}
+              >
+                Tạ Hiện
+              </button>
+              
+              <button
+                disabled={playerLevel < 20}
+                onClick={() => setActiveTab("hotay")}
+                className={`flex-1 md:flex-none py-2 px-4 rounded-lg font-retro text-[10px] font-bold transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer ${
+                  playerLevel < 20 ? "opacity-40 cursor-not-allowed text-slate-650" : ""
+                } ${
+                  activeTab === "hotay"
+                    ? "bg-cta text-white shadow-md shadow-cta/20"
+                    : playerLevel >= 20
+                    ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                    : "text-slate-500"
+                }`}
+              >
+                {playerLevel < 20 && <ShieldAlert className="w-3 h-3 text-slate-500" />}
+                Hồ Tây {playerLevel < 20 && <span className="text-[8px] font-pixel bg-slate-900/60 px-1 py-0.5 rounded text-slate-450">Lv20</span>}
+              </button>
+
+              <button
+                disabled={playerLevel < 30}
+                onClick={() => setActiveTab("congtruong")}
+                className={`flex-1 md:flex-none py-2 px-4 rounded-lg font-retro text-[10px] font-bold transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer ${
+                  playerLevel < 30 ? "opacity-40 cursor-not-allowed text-slate-650" : ""
+                } ${
+                  activeTab === "congtruong"
+                    ? "bg-cta text-white shadow-md shadow-cta/20"
+                    : playerLevel >= 30
+                    ? "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                    : "text-slate-500"
+                }`}
+              >
+                {playerLevel < 30 && <ShieldAlert className="w-3 h-3 text-slate-500" />}
+                Cổng Trường {playerLevel < 30 && <span className="text-[8px] font-pixel bg-slate-900/60 px-1 py-0.5 rounded text-slate-450">Lv30</span>}
+              </button>
+            </div>
+          </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {catalogProducts.map((product) => {
+          {filteredProducts.length === 0 ? (
+            <div className="bg-slate-950 border-4 border-dashed border-slate-800 rounded-xl p-10 text-center text-xs font-retro text-slate-400">
+              Không có sản phẩm nào ở khu vực này.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProducts.map((product) => {
               const isLocked = playerLevel < product.levelRequired;
               
               return (
@@ -260,7 +325,8 @@ export default function ImportGoodsPage() {
               );
             })}
           </div>
-        </div>
+        )}
+      </div>
 
         {/* 4. QUANTITY SELECTOR BOTTOM SHEET */}
         <BottomSheet

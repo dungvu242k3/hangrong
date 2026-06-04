@@ -3,14 +3,15 @@ package game
 import "time"
 
 type UserProfile struct {
-	ID        string `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email,omitempty"`
-	Coins     int64  `json:"coins"`
-	Gems      int64  `json:"gems"`
-	Level     int    `json:"level"`
-	CurrentXP int    `json:"currentXp"`
-	MaxXP     int    `json:"maxXp"`
+	ID         string `json:"id"`
+	Username   string `json:"username"`
+	Email      string `json:"email,omitempty"`
+	Coins      int64  `json:"coins"`
+	Gems       int64  `json:"gems"`
+	Level      int    `json:"level"`
+	CurrentXP  int    `json:"currentXp"`
+	MaxXP      int    `json:"maxXp"`
+	StallLevel int    `json:"stallLevel"`
 }
 
 type Product struct {
@@ -126,4 +127,28 @@ type QuestState struct {
 	RewardGems   int64
 	Type         string
 	Claimed      bool
+}
+
+type Shipper struct {
+	ID              string     `json:"id"`
+	UserID          string     `json:"userId"`
+	ShipperIndex    int        `json:"shipperIndex"`
+	Level           int        `json:"level"`
+	Status          string     `json:"status"`
+	BusyUntil       *time.Time `json:"busyUntil"`
+	Capacity        int        `json:"capacity"`
+	Slots           int        `json:"slots"`
+	SpeedMultiplier float64    `json:"speedMultiplier"`
+}
+
+type DeliveryOrder struct {
+	ID                  string         `json:"id"`
+	UserID              string         `json:"userId"`
+	ShipperID           *string        `json:"shipperId,omitempty"`
+	Items               map[string]int `json:"items"` // product_code -> quantity
+	RewardCoins         int64          `json:"rewardCoins"`
+	RewardXP            int64          `json:"rewardXp"`
+	DeliveryTimeSeconds int            `json:"deliveryTimeSeconds"`
+	Difficulty          string         `json:"difficulty"`
+	Status              string         `json:"status"`
 }
