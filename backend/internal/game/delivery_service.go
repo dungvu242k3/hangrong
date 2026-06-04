@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"log"
 	"math/rand"
 	"time"
 )
@@ -372,13 +373,16 @@ func (s *DeliveryService) Deliver(userID, shipperID string, orderIDs []string) e
 		FOR UPDATE
 	`, orderIDs, userID)
 	if err != nil {
+		log.Printf("DEBUG: tx.Query selected orders failed: %v", err)
 		return err
 	}
 
 	for rows.Next() {
 		var o DeliveryOrder
 		var itemsRaw []byte
-		if err := rows.Scan(&o.ID, &itemsRaw, &o.Status, &o.DeliveryTimeSeconds); err == nil {
+		if err := rows.Scan(&o.ID, &itemsRaw, &o.Status, &o.DeliveryTimeSeconds); err != nil {
+			log.Printf("DEBUG: scan order row failed: %v", err)
+		} else {
 			_ = json.Unmarshal(itemsRaw, &o.Items)
 			orders = append(orders, o)
 		}
@@ -386,6 +390,7 @@ func (s *DeliveryService) Deliver(userID, shipperID string, orderIDs []string) e
 	rows.Close()
 
 	if len(orders) != len(orderIDs) {
+		log.Printf("DEBUG: order count mismatch: got %d orders, requested %d (IDs: %v)", len(orders), len(orderIDs), orderIDs)
 		return ErrNotFound // Some orders do not exist or are already delivering
 	}
 
@@ -700,7 +705,7 @@ func (s *DeliveryService) InstantComplete(userID, shipperID string) (int64, erro
 	}
 
 	// Calculate gem cost: 1 gem per minute remaining, min 1
-	remainingSeconds := int(busyUntil.Time.Sub(time.Now()).Seconds())
+	remainingSeconds := int(time.Until(busyUntil.Time).Seconds())
 	gemCost := (remainingSeconds + 59) / 60
 	if gemCost < 1 {
 		gemCost = 1

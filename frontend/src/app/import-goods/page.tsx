@@ -27,7 +27,7 @@ const STREET_PRODUCTS: Product[] = [
 ];
 
 export default function ImportGoodsPage() {
-  const { products, importOrders, importProduct, claimOrder } = useImport();
+  const { products, importOrders, importProduct, claimOrder, isImporting, isClaiming } = useImport();
   const { player } = usePlayer(true);
 
   // Player profile state values
@@ -177,11 +177,12 @@ export default function ImportGoodsPage() {
                     {isReady ? (
                       <Button
                         onClick={() => handleClaimOrder(order.id)}
+                        disabled={isClaiming}
                         variant="primary"
                         size="sm"
                         className="w-full font-retro text-xs tracking-wider py-2.5"
                       >
-                        XẾP VÀO KHO
+                        {isClaiming ? "ĐANG XẾP..." : "XẾP VÀO KHO"}
                       </Button>
                     ) : (
                       <div className="w-full h-3 bg-slate-950 rounded-lg overflow-hidden border border-slate-800 p-0.5">
@@ -415,12 +416,12 @@ export default function ImportGoodsPage() {
               {/* Import trigger CTA */}
               <Button
                 onClick={handleImportSubmit}
-                disabled={!canAfford}
+                disabled={isImporting || !canAfford}
                 variant="primary"
                 fullWidth
                 className="py-3.5 font-retro text-[10px] tracking-wider"
               >
-                XÁC NHẬN NHẬP HÀNG
+                {isImporting ? "ĐANG NHẬP HÀNG..." : "XÁC NHẬN NHẬP HÀNG"}
               </Button>
             </div>
           )}

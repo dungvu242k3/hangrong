@@ -2,6 +2,7 @@ package game
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 
@@ -56,6 +57,10 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/neighbors/{id}/stall", h.withAuth(h.neighborSlots))
 	mux.HandleFunc("POST /api/neighbors/{id}/help", h.withAuth(h.helpNeighbor))
 	mux.HandleFunc("POST /api/neighbors/{id}/prank", h.withAuth(h.prankNeighbor))
+
+	mux.HandleFunc("GET /api/admin/players", h.adminGetPlayers)
+	mux.HandleFunc("PUT /api/admin/players/{id}", h.adminUpdatePlayer)
+	mux.HandleFunc("DELETE /api/admin/players/{id}", h.adminDeletePlayer)
 }
 
 func (h *Handler) health(w http.ResponseWriter, r *http.Request) {
@@ -359,13 +364,16 @@ func (h *Handler) deliverOrders(w http.ResponseWriter, r *http.Request, userID s
 		OrderIDs []string `json:"orderIds"`
 	}
 	if err := shared.DecodeJSON(r, &req); err != nil {
+		log.Printf("deliverOrders decode JSON error: %v", err)
 		shared.WriteError(w, r, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid JSON body.")
 		return
 	}
 
 	shipperID := r.PathValue("id")
+	log.Printf("DEBUG: deliverOrders called. UserID: %s, ShipperID: %s, OrderIDs: %v", userID, shipperID, req.OrderIDs)
 	err := h.service.DeliverOrders(userID, shipperID, req.OrderIDs)
 	if err != nil {
+		log.Printf("DEBUG: DeliverOrders failed for user %s, shipper %s: %v", userID, shipperID, err)
 		h.writeServiceError(w, r, err)
 		return
 	}
@@ -414,4 +422,58 @@ func (h *Handler) instantCompleteShipper(w http.ResponseWriter, r *http.Request,
 		"success": true,
 		"newGems": newGems,
 	})
+}
+
+func (h *Handler) adminGetPlayers(w http.ResponseWriter, r *http.Request) {
+	players, err := h.service.Admin.ListPlayers()
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, players)
+}
+
+func (h *Handler) adminUpdatePlayer(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Coins int64 `json:"coins"`
+		Gems  int64 `json:"gems"`
+		Level int   `json:"level"`
+	}
+	if err := shared.DecodeJSON(r, &req); err != nil {
+		shared.WriteError(w, r, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid JSON body.")
+		return
+	}
+
+	playerID := r.PathValue("id")
+	if playerID == "" {
+		shared.WriteError(w, r, http.StatusBadRequest, "VALIDATION_ERROR", "Missing player ID.")
+		return
+	}
+
+	if req.Coins < 0 || req.Gems < 0 || req.Level < 1 {
+		shared.WriteError(w, r, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid coins, gems, or level.")
+		return
+	}
+
+	err := h.service.Admin.UpdatePlayer(playerID, req.Coins, req.Gems, req.Level)
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, map[string]bool{"success": true})
+}
+
+func (h *Handler) adminDeletePlayer(w http.ResponseWriter, r *http.Request) {
+	playerID := r.PathValue("id")
+	if playerID == "" {
+		shared.WriteError(w, r, http.StatusBadRequest, "VALIDATION_ERROR", "Missing player ID.")
+		return
+	}
+
+	err := h.service.Admin.DeletePlayer(playerID)
+	if err != nil {
+		h.writeServiceError(w, r, err)
+		return
+	}
+	shared.WriteJSON(w, r, http.StatusOK, map[string]bool{"success": true})
 }

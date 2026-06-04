@@ -13,6 +13,7 @@ type Service struct {
 	Quest        *QuestService
 	Social       *SocialService
 	Delivery     *DeliveryService
+	Admin        *AdminService
 }
 
 func NewService(db *sql.DB) *Service {
@@ -27,6 +28,7 @@ func NewService(db *sql.DB) *Service {
 		Quest:        NewQuestService(db),
 		Social:       NewSocialService(db),
 		Delivery:     NewDeliveryService(db),
+		Admin:        NewAdminService(db),
 	}
 	return svc
 }
