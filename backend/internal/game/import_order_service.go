@@ -64,7 +64,7 @@ func (s *ImportOrderService) ActiveOrders(userID string) ([]ImportOrder, error) 
 }
 
 func (s *ImportOrderService) Create(userID, productID string, quantity int) (ImportOrder, int64, error) {
-	if quantity <= 0 || quantity > 99 {
+	if quantity <= 0 || quantity > 100 {
 		return ImportOrder{}, 0, ErrInvalidInput
 	}
 

@@ -27,6 +27,8 @@ func getTestDB(t *testing.T) *sql.DB {
 		t.Fatalf("failed to open database: %v", err)
 	}
 
+	t.Logf("Connecting to: %s", dbURL)
+
 	if err := db.Ping(); err != nil {
 		t.Skipf("cannot connect to database: %v, skipping database integration tests", err)
 	}
@@ -130,4 +132,79 @@ func TestCollectSlotRequiresReadyState(t *testing.T) {
 		t.Fatalf("expected reward 90 and balance 1290, got reward=%d balance=%d", reward, balance)
 	}
 }
+
+func TestDeliverOrdersSuccess(t *testing.T) {
+	db := getTestDB(t)
+	if db == nil {
+		t.Skip("DB not available")
+	}
+	defer db.Close()
+
+	svc := NewService(db)
+
+	username := fmt.Sprintf("sh_tst_%d", time.Now().Unix())
+	tokens, err := svc.Register(username, username+"@example.com", "123456")
+	if err != nil {
+		t.Fatalf("register: %v", err)
+	}
+	userID, _ := svc.UserIDForAccessToken(tokens.AccessToken)
+
+	// Level up user to 30 to unlock delivery
+	_, err = db.Exec("UPDATE users SET level = 30 WHERE id = $1", userID)
+	if err != nil {
+		t.Fatalf("failed to level up user: %v", err)
+	}
+
+	// Fetch shippers (triggers initialization)
+	shippers, err := svc.Shippers(userID)
+	if err != nil {
+		t.Fatalf("failed to fetch shippers: %v", err)
+	}
+	if len(shippers) == 0 {
+		t.Fatal("expected at least 1 shipper unlocked at level 30")
+	}
+	shipperID := shippers[0].ID
+
+	// Fetch delivery orders (triggers initialization)
+	orders, err := svc.DeliveryOrders(userID)
+	if err != nil {
+		t.Fatalf("failed to fetch delivery orders: %v", err)
+	}
+	if len(orders) == 0 {
+		t.Fatal("expected delivery orders to be generated")
+	}
+	order := orders[0]
+
+	// Add inventory for the first order
+	for pID, qty := range order.Items {
+		_, err = db.Exec(`
+			INSERT INTO inventory (user_id, product_id, quantity)
+			VALUES ($1, $2, $3)
+			ON CONFLICT (user_id, product_id)
+			DO UPDATE SET quantity = inventory.quantity + EXCLUDED.quantity
+		`, userID, pID, qty+10)
+		if err != nil {
+			t.Fatalf("failed to seed inventory for %s: %v", pID, err)
+		}
+	}
+
+	// Perform delivery
+	err = svc.DeliverOrders(userID, shipperID, []string{order.ID})
+	if err != nil {
+		t.Fatalf("DeliverOrders failed: %v", err)
+	}
+
+	// Verify shipper is now delivering
+	shippers, err = svc.Shippers(userID)
+	if err != nil {
+		t.Fatalf("failed to fetch shippers after delivery: %v", err)
+	}
+	if shippers[0].Status != "delivering" {
+		t.Fatalf("expected shipper status to be delivering, got %s", shippers[0].Status)
+	}
+}
+
+
+
+
 

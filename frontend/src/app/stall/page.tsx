@@ -183,6 +183,10 @@ export default function StallPage() {
 
   // Upgrade Stall action
   const handleUpgradeStall = () => {
+    if (level >= 6) {
+      showToast("Sạp hàng đã đạt cấp độ tối đa! 🏆");
+      return;
+    }
     const upgradeCost = level * 1000;
     if (coins < upgradeCost) {
       showToast("Bạn không đủ Xu để nâng cấp sạp hàng! ❌");
@@ -227,17 +231,27 @@ export default function StallPage() {
             </p>
           </div>
 
-          <button
-            onClick={handleUpgradeStall}
-            disabled={isUpgrading}
-            className="flex items-center justify-center gap-3 bg-linear-to-br from-[#EAB308] to-cta hover:from-[#F59E0B] hover:to-[#EA580C] text-white py-2.5 px-6 rounded-2xl cursor-pointer transition-all shadow-retro-md hover:scale-103 font-body font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-cta/20"
-          >
-            <ArrowUpCircle className="w-5 h-5 animate-pulse shrink-0" />
-            <div className="text-left">
-              <p className="leading-tight">{isUpgrading ? "Đang nâng..." : "Nâng cấp sạp"}</p>
-              <p className="text-[10px] text-white/80 font-normal">Chi phí: {level * 1000} Xu</p>
+          {level >= 6 ? (
+            <div className="flex items-center justify-center gap-3 bg-slate-800 text-slate-400 py-2.5 px-6 rounded-2xl border border-slate-700 font-body font-bold text-sm">
+              <Award className="w-5 h-5 shrink-0 text-slate-500" />
+              <div className="text-left">
+                <p className="leading-tight">Cấp Tối Đa</p>
+                <p className="text-[10px] text-slate-500 font-normal">Sạp đã đạt cấp tối đa</p>
+              </div>
             </div>
-          </button>
+          ) : (
+            <button
+              onClick={handleUpgradeStall}
+              disabled={isUpgrading}
+              className="flex items-center justify-center gap-3 bg-linear-to-br from-[#EAB308] to-cta hover:from-[#F59E0B] hover:to-[#EA580C] text-white py-2.5 px-6 rounded-2xl cursor-pointer transition-all shadow-retro-md hover:scale-103 font-body font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed border border-cta/20"
+            >
+              <ArrowUpCircle className="w-5 h-5 animate-pulse shrink-0" />
+              <div className="text-left">
+                <p className="leading-tight">{isUpgrading ? "Đang nâng..." : "Nâng cấp sạp"}</p>
+                <p className="text-[10px] text-white/80 font-normal">Chi phí: {level * 1000} Xu</p>
+              </div>
+            </button>
+          )}
         </div>
 
         {/* 2. CORE GAME CANVAS CONTAINER VIEWPORT */}
@@ -280,7 +294,7 @@ export default function StallPage() {
               <label className="block text-xs font-bold text-slate-400 font-retro uppercase tracking-wider">Chọn món ăn có sẵn</label>
               
               {activeInventory.some((i) => i.quantity > 0) ? (
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
                   {activeInventory
                     .filter((item) => item.quantity > 0)
                     .map((item) => {

@@ -3,6 +3,7 @@ package game
 import (
 	"database/sql"
 	"errors"
+	"time"
 )
 
 type QuestService struct {
@@ -14,6 +15,90 @@ func NewQuestService(db *sql.DB) *QuestService {
 }
 
 func (s *QuestService) List(userID string) ([]Quest, error) {
+	now := time.Now()
+
+	// Start lazy reset check in a transaction
+	tx, err := s.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	var lastDailyReset, lastWeeklyReset time.Time
+	err = tx.QueryRow(`
+		SELECT last_daily_quest_reset_at, last_weekly_quest_reset_at
+		FROM users
+		WHERE id = $1
+		FOR UPDATE
+	`, userID).Scan(&lastDailyReset, &lastWeeklyReset)
+	if err != nil {
+		return nil, err
+	}
+
+	dailyResetNeeded := false
+	weeklyResetNeeded := false
+
+	// Compare dates (day, month, year)
+	y1, m1, d1 := now.Date()
+	y2, m2, d2 := lastDailyReset.Date()
+	if y1 != y2 || m1 != m2 || d1 != d2 {
+		dailyResetNeeded = true
+	}
+
+	// Compare ISO weeks
+	yw1, w1 := now.ISOWeek()
+	yw2, w2 := lastWeeklyReset.ISOWeek()
+	if yw1 != yw2 || w1 != w2 {
+		weeklyResetNeeded = true
+	}
+
+	if dailyResetNeeded {
+		_, err = tx.Exec(`
+			UPDATE user_quests uq
+			SET progress = 0, status = 'active', completed_at = NULL, claimed_at = NULL, updated_at = $1
+			FROM quests q
+			WHERE uq.quest_id = q.id AND uq.user_id = $2 AND q.quest_type = 'daily'
+		`, now, userID)
+		if err != nil {
+			return nil, err
+		}
+
+		_, err = tx.Exec(`
+			UPDATE users
+			SET last_daily_quest_reset_at = $1
+			WHERE id = $2
+		`, now, userID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if weeklyResetNeeded {
+		_, err = tx.Exec(`
+			UPDATE user_quests uq
+			SET progress = 0, status = 'active', completed_at = NULL, claimed_at = NULL, updated_at = $1
+			FROM quests q
+			WHERE uq.quest_id = q.id AND uq.user_id = $2 AND q.quest_type = 'weekly'
+		`, now, userID)
+		if err != nil {
+			return nil, err
+		}
+
+		_, err = tx.Exec(`
+			UPDATE users
+			SET last_weekly_quest_reset_at = $1
+			WHERE id = $2
+		`, now, userID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
+
+	// Now fetch the updated quest list
 	rows, err := s.db.Query(`
 		SELECT uq.id, q.title, q.description, q.target_value, uq.progress,
 		       COALESCE((q.reward->>'coins')::bigint, 0),

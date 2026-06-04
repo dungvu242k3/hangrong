@@ -152,3 +152,13 @@ type DeliveryOrder struct {
 	Difficulty          string         `json:"difficulty"`
 	Status              string         `json:"status"`
 }
+
+type AdminPlayer struct {
+	ID          string    `json:"id"`
+	Username    string    `json:"username"`
+	DisplayName string    `json:"displayName"`
+	Level       int       `json:"level"`
+	Coins       int64     `json:"coins"`
+	Gems        int64     `json:"gems"`
+	CreatedAt   time.Time `json:"createdAt"`
+}

@@ -26,6 +26,7 @@ interface CustomerNPC {
 }
 
 export class StallScene {
+  private isDestroyed: boolean = false;
   private parentContainer: Container;
   private app: Application;
   private container: Container;
@@ -493,6 +494,7 @@ export class StallScene {
   // 4. CUSTOMER SPONSOR CYCLE
   private startCustomerSpawnTimer() {
     const spawn = () => {
+      if (this.isDestroyed) return;
       // Limit total active customers
       if (this.activeCustomers.length < 3) {
         this.spawnCustomer();
@@ -504,6 +506,7 @@ export class StallScene {
   }
 
   private spawnCustomer() {
+    if (this.isDestroyed) return;
     const container = new Container();
     this.customerLayer.addChild(container);
 
@@ -620,9 +623,17 @@ export class StallScene {
   private handleSlotClick(index: number) {
     const slot = this.slots[index];
     
-    // Trigger collect if ready
+    // Trigger collect if ready (only if customer NPC has arrived to buy)
     if (slot.isReadyToCollect) {
-      this.harvestSlot(index);
+      const customerAtSlot = this.activeCustomers.find(
+        (c) => c.slotIndex === index && c.state === "buying"
+      );
+      if (customerAtSlot) {
+        this.harvestSlot(index);
+      } else {
+        // Show floating message: "Đang chờ người mua... 🏪"
+        this.spawnFloatingText(slot.x, slot.y - 45, "Đang chờ người mua... 🏪", "#EF4444");
+      }
     } else {
       // Emit click to React to open inventory panel
       gameEmitter.emit("game:slot_clicked", {
@@ -652,6 +663,7 @@ export class StallScene {
   }
 
   private updateSlotVisual(slot: SlotData) {
+    if (this.isDestroyed) return;
     const index = this.slots.findIndex((s) => s.id === slot.id);
     if (index === -1) return;
 
@@ -661,10 +673,27 @@ export class StallScene {
     g.clear();
     
     if (slot.productId) {
-      // Redraw containing product (soft orange outline if selling, glowing green if ready to collect)
-      const borderColor = slot.isReadyToCollect ? 0x10B981 : 0xF97316;
-      const borderSize = slot.isReadyToCollect ? 4 : 3;
-      const bgFill = slot.isReadyToCollect ? 0xF0FDF4 : 0xFFFAF0;
+      // Determine if a customer NPC is currently at the slot to buy it
+      const hasNPC = this.activeCustomers.some(
+        (c) => c.slotIndex === index && (c.state === "buying" || c.state === "leaving")
+      );
+
+      // Redraw containing product (soft orange outline if selling, Sky Blue if waiting for buyer, glowing green if NPC is buying/ready)
+      let borderColor = 0xF97316;
+      let borderSize = 3;
+      let bgFill = 0xFFFAF0;
+
+      if (slot.isReadyToCollect) {
+        if (hasNPC) {
+          borderColor = 0x10B981; // Green (NPC is buying)
+          borderSize = 4;
+          bgFill = 0xF0FDF4;
+        } else {
+          borderColor = 0x0EA5E9; // Sky Blue (Waiting for buyer)
+          borderSize = 4;
+          bgFill = 0xF0F9FF;
+        }
+      }
 
       g.circle(slot.x, slot.y, 35);
       g.fill(bgFill);
@@ -672,7 +701,7 @@ export class StallScene {
 
       // Draw item shadow
       g.ellipse(slot.x, slot.y + 10, 20, 6);
-      g.fill(slot.isReadyToCollect ? 0xDCFCE7 : 0xFED7AA);
+      g.fill(slot.isReadyToCollect ? (hasNPC ? 0xDCFCE7 : 0xE0F2FE) : 0xFED7AA);
 
       // Update text to emoji icon
       textLabel.text = slot.productIcon ? getProductVisual(slot.productIcon).emoji : "🥖";
@@ -699,6 +728,7 @@ export class StallScene {
 
   // Harvest and spawn flying coins
   private harvestSlot(index: number) {
+    if (this.isDestroyed) return;
     const slot = this.slots[index];
     if (!slot.isReadyToCollect) return;
 
@@ -749,8 +779,40 @@ export class StallScene {
     });
   }
 
+  private spawnFloatingText(x: number, y: number, textStr: string, color: string = "#EF4444") {
+    const floatText = new Text({
+      text: textStr,
+      style: new TextStyle({
+        fontFamily: "Arial",
+        fontSize: 12,
+        fontWeight: "bold",
+        fill: color,
+        stroke: { color: "#FFFFFF", width: 2 },
+      }),
+    });
+    floatText.x = x - floatText.width / 2;
+    floatText.y = y;
+    this.effectLayer.addChild(floatText);
+
+    let alpha = 1;
+    const fade = () => {
+      if (this.isDestroyed) return;
+      alpha -= 0.04;
+      floatText.alpha = alpha;
+      floatText.y -= 1;
+      if (alpha <= 0) {
+        this.effectLayer.removeChild(floatText);
+        floatText.destroy();
+      } else {
+        setTimeout(fade, 30);
+      }
+    };
+    fade();
+  }
+
   // 6. REAL-TIME TICKER TICK LOOPS (ANIMATIONS)
   private update() {
+    if (this.isDestroyed) return;
     const delta = Ticker.shared.deltaTime;
 
     // A. Update Active Orders Timers & Slot Bars
@@ -836,6 +898,7 @@ export class StallScene {
 
   // Draw speech bubbles for NPC customers
   private customerBuyAction(customer: CustomerNPC) {
+    if (this.isDestroyed) return;
     const slot = this.slots[customer.slotIndex];
     const isOccupied = slot && slot.productId !== null;
 
@@ -879,6 +942,7 @@ export class StallScene {
     const isReady = slot && slot.isReadyToCollect;
     if (isReady) {
       setTimeout(() => {
+        if (this.isDestroyed) return;
         this.harvestSlot(customer.slotIndex);
       }, 150); // slight delay so they arrive and show speech bubble first
     }
@@ -887,6 +951,7 @@ export class StallScene {
 
     // Let customer buy or look, then walk off screen
     setTimeout(() => {
+      if (this.isDestroyed) return;
       if (customer.speechBubble) {
         customer.container.removeChild(customer.speechBubble);
       }
@@ -914,6 +979,7 @@ export class StallScene {
 
       // Remove bubble after 1.5s
       setTimeout(() => {
+        if (this.isDestroyed) return;
         if (customer.speechBubble) {
           customer.container.removeChild(customer.speechBubble);
         }
@@ -946,6 +1012,14 @@ export class StallScene {
         // Stack layout: 3 slots top, 3 slots bottom
         xPositions = [220, 400, 580, 220, 400, 580];
         yPositions = [345, 345, 345, 395, 395, 395];
+      } else if (numSlots === 7) {
+        // Stack layout: 4 slots top, 3 slots bottom
+        xPositions = [170, 320, 470, 620, 220, 400, 580];
+        yPositions = [345, 345, 345, 345, 395, 395, 395];
+      } else if (numSlots === 8) {
+        // Stack layout: 4 slots top, 4 slots bottom
+        xPositions = [170, 320, 470, 620, 170, 320, 470, 620];
+        yPositions = [345, 345, 345, 345, 395, 395, 395, 395];
       }
 
       this.slots = data.slots.map((newSlot, idx) => {
@@ -985,6 +1059,7 @@ export class StallScene {
       // Fade out glow quickly
       let alpha = 0.6;
       const fade = () => {
+        if (this.isDestroyed) return;
         alpha -= 0.05;
         glow.alpha = alpha;
         if (alpha <= 0) {
@@ -1006,6 +1081,7 @@ export class StallScene {
       
       let alpha = 0.5;
       const fade = () => {
+        if (this.isDestroyed) return;
         alpha -= 0.04;
         glow.alpha = alpha;
         if (alpha <= 0) {
@@ -1034,6 +1110,7 @@ export class StallScene {
       
       let alpha = 0.7;
       const fade = () => {
+        if (this.isDestroyed) return;
         alpha -= 0.03;
         dustContainer.alpha = alpha;
         if (alpha <= 0) {
@@ -1048,6 +1125,7 @@ export class StallScene {
   }
 
   public destroy() {
+    this.isDestroyed = true;
     Ticker.shared.remove(this.updateFn);
     window.removeEventListener("resize", this.resizeFn);
     gameEmitter.off("react:place_product");
